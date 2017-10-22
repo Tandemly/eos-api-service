@@ -17,28 +17,28 @@ const accountSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
       minlength: 1,
-      maxlength: 13
+      maxlength: 13,
     },
     abi: mongoose.Schema.Types.Mixed,
     eos_balance: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     staked_balance: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     unstaking_balance: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
   },
   {
     timestamps: true,
-    collection: 'Accounts'
+    collection: 'Accounts',
   },
 );
 
@@ -50,16 +50,16 @@ accountSchema.method({
     const transformed = {};
     // TODO: figure out how we want to handle ABI sub-docs
     const fields = [
-      "id",
-      "name",
-      "eos_balance",
-      "staked_balance",
-      "unstaking_balance",
-      "abi",
-      "createdAt"
+      'id',
+      'name',
+      'eos_balance',
+      'staked_balance',
+      'unstaking_balance',
+      'abi',
+      'createdAt',
     ];
 
-    fields.forEach(field => {
+    fields.forEach((field) => {
       if (this[field]) {
         if (/balance$/i.test(field)) {
           transformed[field] = parseFloat(this[field]);
@@ -70,7 +70,7 @@ accountSchema.method({
     });
 
     return transformed;
-  }
+  },
 });
 
 accountSchema.statics = {
@@ -91,7 +91,7 @@ accountSchema.statics = {
     if (!account) {
       throw new APIError({
         status: httpStatus.NOT_FOUND,
-        message: "EOS account not found or invalid"
+        message: 'EOS account not found or invalid',
       });
     }
     return account;
@@ -106,7 +106,7 @@ accountSchema.statics = {
    * @param {Object|String} [projection] - Mongoose `select()` arg denoting fields to include or exclude
    * @returns {Promise<Block[]>}
    */
-  list({ skip = 1, limit = 30, sort, filter, projection }) {
+  list({ skip = 0, limit = 30, sort, filter, projection }) {
     return this.find(filter)
       .sort(sort || { createdAt: -1 })
       .select(projection)
@@ -114,7 +114,7 @@ accountSchema.statics = {
       .limit(limit)
       .exec();
   },
-}
+};
 
 /**
  * @typedef Account

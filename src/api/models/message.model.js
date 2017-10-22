@@ -1,47 +1,49 @@
-const mongoose = require("mongoose");
-const httpStatus = require("http-status");
-const { omitBy, isNil } = require("lodash");
-const APIError = require("../utils/APIError");
+const mongoose = require('mongoose');
+const httpStatus = require('http-status');
+const { omitBy, isNil } = require('lodash');
+const APIError = require('../utils/APIError');
 
 /**
  * EOS Message Schema
  * @private
  */
-const messageSchema = new mongoose.Schema({
-  message_id: {
-    type: Number
+const messageSchema = new mongoose.Schema(
+  {
+    message_id: {
+      type: Number,
+    },
+    transaction_id: {
+      type: String,
+      required: true,
+      unique: true,
+      length: 64,
+    },
+    authorization: [
+      {
+        account: String,
+        permission: String,
+      },
+    ],
+    handler_account_name: {
+      type: String,
+      match: /^[.12345a-z]+$/,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+      minlength: 1,
+      maxlength: 13,
+    },
+    type: {
+      type: String,
+    },
+    data: mongoose.Schema.Types.Mixed,
   },
-  transaction_id: {
-    type: String,
-    required: true,
-    unique: true,
-    length: 64
+  {
+    timestamps: true,
+    collection: 'Messages',
   },
-  authorization: [
-    {
-      account: String,
-      permission: String
-    }
-  ],
-  handler_account_name: {
-    type: String,
-    match: /^[.12345a-z]+$/,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
-    minlength: 1,
-    maxlength: 13
-  },
-  type: {
-    type: String
-  },
-  data: mongoose.Schema.Types.Mixed
-},
-{
-  timestamps: true,
-  collection: 'Messages'
-});
+);
 
 /**
  * Methods
@@ -51,22 +53,22 @@ messageSchema.method({
     const transformed = {};
     // TODO: figure out how we want to handle ABI sub-docs
     const fields = [
-      "id",
-      "message_id",
-      "transaction_id",
-      "authorization",
-      "handler_account_name",
-      "type",
-      "data",
-      "createdAt"
+      'id',
+      'message_id',
+      'transaction_id',
+      'authorization',
+      'handler_account_name',
+      'type',
+      'data',
+      'createdAt',
     ];
 
-    fields.forEach(field => {
-        transformed[field] = this[field];
+    fields.forEach((field) => {
+      transformed[field] = this[field];
     });
 
     return transformed;
-  }
+  },
 });
 
 messageSchema.statics = {
@@ -78,14 +80,14 @@ messageSchema.statics = {
    */
   async get(block_ident) {
     const isId = isNaN(Number(block_ident));
-    const query = isId ? // query = typeof block_ident === 'string' ? 
-      { block_id: block_ident } :
-      { block_num: block_ident }; 
+    const query = isId // query = typeof block_ident === 'string' ?
+      ? { block_id: block_ident }
+      : { block_num: block_ident };
     const block = await this.findOne(query).exec();
     if (!block) {
       throw new APIError({
         status: httpStatus.NOT_FOUND,
-        message: "EOS block id or block number not found or invalid"
+        message: 'EOS block id or block number not found or invalid',
       });
     }
     return block;
@@ -100,7 +102,7 @@ messageSchema.statics = {
    * @param {Object|String} [projection] - Mongoose `select()` arg denoting fields to include or exclude
    * @returns {Promise<Block[]>}
    */
-  list({ skip = 1, limit = 30, sort, filter, projection }) {
+  list({ skip = 0, limit = 30, sort, filter, projection }) {
     return this.find(filter)
       .sort(sort || { createdAt: -1 })
       .select(projection)
@@ -108,10 +110,10 @@ messageSchema.statics = {
       .limit(limit)
       .exec();
   },
-}
+};
 
 /**
  * @typedef Message
  */
-const Message = mongoose.model("Message", messageSchema);
+const Message = mongoose.model('Message', messageSchema);
 module.exports = Message;

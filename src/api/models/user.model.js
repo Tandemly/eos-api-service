@@ -1,19 +1,19 @@
-const mongoose = require("mongoose");
-const httpStatus = require("http-status");
-const { omitBy, isNil } = require("lodash");
-const bcrypt = require("bcryptjs");
-const moment = require("moment-timezone");
-const jwt = require("jwt-simple");
-const uuidv4 = require("uuid/v4");
-const APIError = require("../utils/APIError");
-const ResetToken = require("./resetToken.model");
-const RefreshToken = require("./refreshToken.model");
-const { env, jwtSecret, jwtExpirationInterval } = require("../../config/vars");
+const mongoose = require('mongoose');
+const httpStatus = require('http-status');
+const { isEmpty, compact, omitBy, isNil } = require('lodash');
+const bcrypt = require('bcryptjs');
+const moment = require('moment-timezone');
+const jwt = require('jwt-simple');
+const uuidv4 = require('uuid/v4');
+const APIError = require('../utils/APIError');
+const ResetToken = require('./resetToken.model');
+const RefreshToken = require('./refreshToken.model');
+const { env, jwtSecret, jwtExpirationInterval } = require('../../config/vars');
 
 /**
 * User Roles
 */
-const roles = ["user", "admin"];
+const roles = ['user', 'admin'];
 
 /**
  * User Schema
@@ -27,20 +27,20 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
       trim: true,
-      lowercase: true
+      lowercase: true,
     },
     password: {
       type: String,
       required: true,
       minlength: 6,
-      maxlength: 128
+      maxlength: 128,
     },
     name: {
       type: String,
       minlength: 6,
       maxlength: 128,
       index: true,
-      trim: true
+      trim: true,
     },
     // services: {
     //   facebook: String,
@@ -49,16 +49,17 @@ const userSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: roles,
-      default: "user"
+      default: 'user',
     },
     picture: {
       type: String,
-      trim: true
-    }
+      trim: true,
+    },
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+    toJSON: { virtuals: true },
+  },
 );
 
 /**
@@ -67,11 +68,11 @@ const userSchema = new mongoose.Schema(
  * - validations
  * - virtuals
  */
-userSchema.pre("save", async function save(next) {
+userSchema.pre('save', async function save(next) {
   try {
-    if (!this.isModified("password")) return next();
+    if (!this.isModified('password')) return next();
 
-    const rounds = env === "test" ? 1 : 10;
+    const rounds = env === 'test' ? 1 : 10;
 
     const hash = await bcrypt.hash(this.password, rounds);
     this.password = hash;
@@ -82,17 +83,15 @@ userSchema.pre("save", async function save(next) {
   }
 });
 
-
-
 /**
  * Methods
  */
 userSchema.method({
   transform() {
     const transformed = {};
-    const fields = ["id", "name", "email", "picture", "role", "createdAt"];
+    const fields = ['id', 'name', 'email', 'picture', 'role', 'createdAt'];
 
-    fields.forEach(field => {
+    fields.forEach((field) => {
       transformed[field] = this[field];
     });
 
@@ -102,10 +101,10 @@ userSchema.method({
   token() {
     const playload = {
       exp: moment()
-        .add(jwtExpirationInterval, "minutes")
+        .add(jwtExpirationInterval, 'minutes')
         .unix(),
       iat: moment().unix(),
-      sub: this._id
+      sub: this._id,
     };
     return jwt.encode(playload, jwtSecret);
   },
@@ -113,7 +112,7 @@ userSchema.method({
   async passwordMatches(password) {
     const matches = await bcrypt.compare(password, this.password);
     return matches;
-  }
+  },
 });
 
 /**
@@ -140,8 +139,8 @@ userSchema.statics = {
       }
 
       throw new APIError({
-        message: "User does not exist",
-        status: httpStatus.NOT_FOUND
+        message: 'User does not exist',
+        status: httpStatus.NOT_FOUND,
       });
     } catch (error) {
       throw error;
@@ -159,7 +158,7 @@ userSchema.statics = {
     if (!user) {
       throw new APIError({
         status: httpStatus.NOT_FOUND,
-        message: "User email not found or invalid"
+        message: 'User email not found or invalid',
       });
     }
     return user;
@@ -173,25 +172,26 @@ userSchema.statics = {
    */
   async findAndGenerateToken(options) {
     const { email, password, refreshObject } = options;
-    if (!email)
+    if (!email) {
       throw new APIError({
-        message: "An email is required to generate a token"
+        message: 'An email is required to generate a token',
       });
+    }
 
     const user = await this.findOne({ email }).exec();
     const err = {
       status: httpStatus.UNAUTHORIZED,
-      isPublic: true
+      isPublic: true,
     };
     if (password) {
       if (user && user.passwordMatches(password)) {
         return { user, accessToken: user.token() };
       }
-      err.message = "Incorrect email or password";
+      err.message = 'Incorrect email or password';
     } else if (refreshObject && refreshObject.userEmail === email) {
       return { user, accessToken: user.token() };
     } else {
-      err.message = "Incorrect email or refreshToken";
+      err.message = 'Incorrect email or refreshToken';
     }
     throw new APIError(err);
   },
@@ -206,13 +206,12 @@ userSchema.statics = {
     const { email, url } = options;
     if (!email) {
       throw new APIError({
-        message: "An email is required to generate a password reset token"
+        message: 'An email is required to generate a password reset token',
       });
     }
     if (!url) {
       throw new APIError({
-        message:
-          "Client must provide a url to allow changing a password for a valid email + token"
+        message: 'Client must provide a url to allow changing a password for a valid email + token',
       });
     }
 
@@ -220,9 +219,9 @@ userSchema.statics = {
     const existingToken = await ResetToken.findOne({ userEmail: email }).exec();
     const now = moment();
     const err = {
-      message: "Non-existant email",
+      message: 'Non-existant email',
       status: httpStatus.NOT_FOUND,
-      isPublic: true
+      isPublic: true,
     };
 
     if (!user) {
@@ -232,13 +231,11 @@ userSchema.statics = {
     if (existingToken) {
       if (moment(existingToken.expires).isBefore(now)) {
         // token expired, remove and continue
-        const deleted = await ResetToken.findByIdAndRemove(
-          existingToken._id
-        ).exec();
+        const deleted = await ResetToken.findByIdAndRemove(existingToken._id).exec();
       } else {
         // Otherwise, token still in effect, can't create a new one
         err.status = httpStatus.CONFLICT;
-        err.message = "A reset token has already been created for this email";
+        err.message = 'A reset token has already been created for this email';
         throw new APIError(err);
       }
     }
@@ -263,17 +260,17 @@ userSchema.statics = {
     if (!match) {
       throw new APIError({
         status: httpStatus.CONFLICT,
-        message: "No matching reset token found for email"
+        message: 'No matching reset token found for email',
       });
     }
     // Remove existing reset token
     const deletedReset = await ResetToken.findByIdAndRemove(match._id).exec();
     const deletedRefreshes = await RefreshToken.remove({
-      userEmail: email
+      userEmail: email,
     }).exec();
     return {
       nRefreshRemoved: deletedRefreshes.nRemoved,
-      resetRemoved: !!deletedReset
+      resetRemoved: !!deletedReset,
     };
   },
 
@@ -285,15 +282,18 @@ userSchema.statics = {
    * @param {Object} [sort] - Object w/ keys matching fieldnames to be sorted, values as -1 (desc), 1 (asc)
    * @param {Object} [filter] - Object matching a Mongoose query object
    * @param {Object|String} [projection] - Mongoose `select()` arg denoting fields to include or exclude
-   * @returns {Promise<Block[]>}
+   * @returns {Promise<User[]>}
    */
-  list({ skip = 1, limit = 30, sort, filter, projection }) {
-    return this.find(filter)
-      .sort(sort || { createdAt: -1 })
-      .select(projection)
-      .skip(skip)
-      .limit(limit)
-      .exec();
+  list({ skip = 0, limit = 30, sort, filter, projection }) {
+    const $match = isEmpty(filter) ? null : { $match: filter };
+    const $project = projection ? { $project: projection } : null;
+    const $skip = { $skip: skip };
+    const $limit = { $limit: limit };
+    const $sort = sort ? { $sort: sort } : null;
+
+    const agg = compact([$match, $project, $skip, $limit, $sort]);
+
+    return this.aggregate(agg).exec();
   },
 
   /**
@@ -304,23 +304,23 @@ userSchema.statics = {
    * @returns {Error|APIError}
    */
   checkDuplicateEmail(error) {
-    if (error.name === "MongoError" && error.code === 11000) {
+    if (error.name === 'MongoError' && error.code === 11000) {
       return new APIError({
-        message: "Validation Error",
+        message: 'Validation Error',
         errors: [
           {
-            field: "email",
-            location: "body",
-            messages: ['"email" already exists']
-          }
+            field: 'email',
+            location: 'body',
+            messages: ['"email" already exists'],
+          },
         ],
         status: httpStatus.CONFLICT,
         isPublic: true,
-        stack: error.stack
+        stack: error.stack,
       });
     }
     return error;
-  }
+  },
 
   // async oAuthLogin({ service, id, email, name, picture }) {
   //   const user = await this.findOne({ $or: [{ [`services.${service}`]: id }, { email }] });
@@ -338,4 +338,4 @@ userSchema.statics = {
 /**
  * @typedef User
  */
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);

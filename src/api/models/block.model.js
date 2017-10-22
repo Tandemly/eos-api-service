@@ -133,7 +133,6 @@ blockSchema.statics = {
     // }
     // block = await block.exec();
     const agg = compact([$match, $lookup, $project]);
-    console.log(agg);
 
     const block = await this.aggregate(agg).exec();
 
@@ -156,7 +155,7 @@ blockSchema.statics = {
    * @param {Object|String} [projection] - Mongoose `select()` arg denoting fields to include or exclude
    * @returns {Promise<Block[]>}
    */
-  list({ skip = 1, limit = 30, sort, filter, projection }) {
+  list({ skip = 0, limit = 30, sort, filter, projection }) {
     const $match = isEmpty(filter) ? null : { $match: filter };
     const $lookup = {
       $lookup: {
@@ -172,7 +171,6 @@ blockSchema.statics = {
     const $sort = sort ? { $sort: sort } : null;
 
     const agg = compact([$match, $lookup, $project, $skip, $limit, $sort]);
-    console.log(agg);
 
     return this.aggregate(agg).exec();
   },

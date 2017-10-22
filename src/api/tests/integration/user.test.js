@@ -20,7 +20,7 @@ async function format(user) {
   delete formated.password;
 
   // get users from database
-  const dbUser = (await User.findOne({ email: user.email })).transform();
+  const dbUser = await User.findOne({ email: user.email });
 
   // remove null and undefined properties
   return omitBy(dbUser, isNil);
@@ -186,7 +186,7 @@ describe('Users API', () => {
       return request(app)
         .get('/v1/users')
         .set('Authorization', `Bearer ${adminAccessToken}`)
-        .query({ page: 2, perPage: 1 })
+        .query({ skip: 1, limit: 1 })
         .expect(httpStatus.OK)
         .then((res) => {
           delete dbUsers.jonSnow.password;
@@ -222,7 +222,7 @@ describe('Users API', () => {
         });
     });
 
-    it('should report error when pagination\'s parameters are not a number', () => {
+    it("should report error when pagination's parameters are not a number", () => {
       return request(app)
         .get('/v1/users')
         .set('Authorization', `Bearer ${adminAccessToken}`)
@@ -514,7 +514,7 @@ describe('Users API', () => {
   });
 
   describe('GET /v1/users/profile', () => {
-    it('should get the logged user\'s info', () => {
+    it("should get the logged user's info", () => {
       delete dbUsers.jonSnow.password;
 
       return request(app)
@@ -532,7 +532,7 @@ describe('Users API', () => {
       const expiredAccessToken = (await User.findAndGenerateToken(dbUsers.branStark)).accessToken;
 
       // move clock forward by minutes set in config + 1 minute
-      clock.tick((JWT_EXPIRATION * 60000) + 60000);
+      clock.tick(JWT_EXPIRATION * 60000 + 60000);
 
       return request(app)
         .get('/v1/users/profile')

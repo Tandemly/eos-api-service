@@ -88,8 +88,8 @@ exports.list = async (req, res, next) => {
   try {
     const query = aqp(req.query);
     const users = await User.list(query);
-    const transformedUsers = users.map(user => user.transform());
-    res.json(transformedUsers);
+    // const transformedUsers = users.map(user => user.transform());
+    res.json(users);
   } catch (error) {
     next(error);
   }

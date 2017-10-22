@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const config = require('../../config/vars');
 
-const transporter = nodemailer.createTransport(config.mail);
+const transporter = nodemailer.createTransport({ pool: true, ...config.mail });
 
 const mailOptions = {
   from: '"API Service 👻" <ghost@api-service.com>',
@@ -19,10 +19,12 @@ async function mail({ to, subject, message }) {
         html: message,
       },
       (err, info) => {
+        transporter.close();
         if (err) {
           reject(err);
+        } else {
+          resolve(info);
         }
-        resolve(info);
       },
     );
   });

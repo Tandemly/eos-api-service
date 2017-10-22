@@ -20,9 +20,9 @@ const message = {
 // const transporter = nodemailer.createTransport(config);
 // const testMail = Promise.promisify(transporter.sendMail, { context: transporter });
 
-describe('Able to send email', () => {
-  it('should create a new user when request is ok', function () {
-    this.timeout(4000);
+describe('SMTP mail testing', () => {
+  it('should be able to send email via SMTP config', function () {
+    this.timeout(10000);
     return mail(message).then((info) => {
       expect(info).to.be.an('object');
       expect(info).to.haveOwnProperty('messageId');
