@@ -21,15 +21,15 @@
     "yarn": "*"
   },
   "scripts": {
-    "precommit": "npm lint",
+    "precommit": "npm run lint",
     "start": "cross-env NODE_ENV=production pm2 start ./src/index.js",
     "now-start": "cross-env node ./src/index.js",
     "dev": "nodemon ./src/index.js",
     "debug": "nodemon --debug ./src/index.js",
     "lint":
       "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
-    "lint:fix": "npm lint -- --fix",
-    "lint:watch": "npm lint -- --watch",
+    "lint:fix": "npm run lint -- --fix",
+    "lint:watch": "npm run lint -- --watch",
     "test":
       "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 20000 src/api/tests/unit src/api/tests/integration",
     "test:unit": "cross-env NODE_ENV=test mocha src/api/tests/unit",
@@ -37,7 +37,7 @@
       "cross-env NODE_ENV=test mocha --timeout 20000 src/api/tests/integration",
     "test:watch": "cross-env NODE_ENV=test mocha --watch src/api/tests/unit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "validate": "npm lint && npm test",
+    "validate": "npm run lint && npm test",
     "postpublish": "git push --tags",
     "docs": "apidoc -i src -o docs",
     "docker:start":
