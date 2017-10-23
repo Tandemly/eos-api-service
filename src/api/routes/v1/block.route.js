@@ -29,7 +29,7 @@ router
    * @apiGroup Block
    * @apiPermission user
    *
-   * @apiHeader {String} Athorization  User's API access token
+   * @apiHeader {String} Authorization  User's API access token
    *
    * @apiUse CollectionParams
    *
@@ -114,7 +114,7 @@ router
    * @apiExample {curl} Example usage:
    *  curl -i http://localhost:3000/v1/blocks/00000001bd27a3d68b5e66519cfac498d2e96da9bfd1bacf4110f4c7c98feca3
    *
-   * @apiHeader {String} Athorization  User's access token
+   * @apiHeader {String} Authorization  User's access token
    * 
    * @apiParam {mixed} ident the `block_id {String}` or `block_num {Number}` of the desired block
    * @apiUse FieldParam
@@ -149,7 +149,7 @@ router
    * @apiGroup Transaction
    * @apiPermission user
    *
-   * @apiHeader {String} Athorization  User's access token
+   * @apiHeader {String} Authorization  User's access token
    *
    * @apiUse CollectionParams
    *
@@ -209,7 +209,7 @@ router
    * @apiGroup Transaction
    * @apiPermission user
    *
-   * @apiHeader {String} Athorization  User's access token
+   * @apiHeader {String} Authorization  User's access token
    *
    * @apiUse TransactionModel
    *
