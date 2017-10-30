@@ -26,28 +26,21 @@
     "now-start": "cross-env node ./src/index.js",
     "dev": "nodemon ./src/index.js",
     "debug": "nodemon --debug ./src/index.js",
-    "lint":
-      "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
+    "lint": "eslint **/*.js --ignore-path .gitignore --ignore-pattern internals/scripts",
     "lint:fix": "npm run lint -- --fix",
     "lint:watch": "npm run lint -- --watch",
-    "test":
-      "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 20000 src/api/tests/unit src/api/tests/integration",
+    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 20000 src/api/tests/unit src/api/tests/integration",
     "test:unit": "cross-env NODE_ENV=test mocha src/api/tests/unit",
-    "test:integration":
-      "cross-env NODE_ENV=test mocha --timeout 20000 src/api/tests/integration",
+    "test:integration": "cross-env NODE_ENV=test mocha --timeout 20000 src/api/tests/integration",
     "test:watch": "cross-env NODE_ENV=test mocha --watch src/api/tests/unit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "validate": "npm run lint && npm test",
     "postpublish": "git push --tags",
     "docs": "apidoc -i src -o docs",
-    "docker:start":
-      "cross-env NODE_ENV=production pm2-docker start ./src/index.js",
-    "docker:prod":
-      "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
-    "docker:dev":
-      "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "docker:test":
-      "docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit"
+    "docker:start": "cross-env NODE_ENV=production pm2-docker start ./src/index.js",
+    "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
+    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit"
   },
   "repository": {
     "type": "git",
@@ -120,6 +113,9 @@
     "sinon": "^3.0.0",
     "sinon-chai": "^2.10.0",
     "supertest": "^3.0.0"
+  },
+  "resolutions": {
+    "just-extend": "1.1.22"
   },
   "license": "MIT"
 }
