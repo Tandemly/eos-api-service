@@ -4,8 +4,6 @@ cache: yarn
 env:
   global:
   - NODE_ENV=test
-  - MONGO_URI=mongodb://apiuser:apiuser123!@ds115035.mlab.com:15035/api-service
-  - MONGO_URI_TESTS=mongodb://apiuser:apiuser123!@ds127105.mlab.com:27105/api-service-test
   - PORT=3000
   - JWT_EXPIRATION_MINUTES=15
   - secure: ULgW939nAw4VXR+dIk/Js0InSZzHx4fIN8lLP+p4eAREuoTqUMvreJMjC+kfB3iEbvZi9/S7Wb4sw4aKM7kGLwe3JOtUxjNwJI7Ivt/audyprC9Q3LdfTsPa0OloIDwrGKOdOCvCB2oxc9rwGCzo2omFJwUqPRuq7t68Sm4AOuShL5f7XKDl+bgCHtXuG7endyq/yRq9PU13yQik1viEWirXYEkoVUs3XMufIwYaml1cpIuzSxOjg35Vj/4800tAT6Y/rC+ILTKFRkttY8JSV1AUFSw6twhLDT/b9rMcWZizw6pebZy6X6y9Yw4Dvdpa5trcdQZNYWJAAgLX5vfuNcjc9LeoQGkBwUniriTIBoMyyaKljsdp112oJrKYSQr7Hm9EUG4sfbMeAHY/G0kWWbWtMsqVnms4/0kSo/41JPDZmOeu33k1aQhgdMyKsiiyZkSPxs+88vzGLOe6x3zENtxabZmbep1YlWr0hV2uTxwSVNs8X6gco9klFS5BER0nqd/vylNAl/MeWdQttAdM8iKLzzAfNZ7ohQo290Ns9rdvLT4QtVVPIgAIl9oCqbiVc+no85oKJIZilMWWmMop5h47psTyWGNk2ji99iR6QrsRBBPUh0b5870XQHnc4h6OqBQV8MfmvBpqZ9m3ls0kiM/CRcWgwcP1rYY7PlZzDU0=
