@@ -1,30 +1,13 @@
 language: node_js
 node_js: '8'
 cache: yarn
-
-git:
-  depth: 3
-
-branches:
-  only:
-    - master
-    - /^greenkeeper/.*$/
-
 env:
   global:
-    - NODE_ENV=test
-    - PORT=3000
-    - JWT_SECRET=bA2xcjpf8y5aSUFsNB2qN5yymUBSs6es3qHoFpGkec75RCeBb8cpKauGefw5qy4
-    - JWT_EXPIRATION_MINUTES=15
-
+  - NODE_ENV=test
+  - PORT=3000
+  - JWT_EXPIRATION_MINUTES=15
+  - secure: ULgW939nAw4VXR+dIk/Js0InSZzHx4fIN8lLP+p4eAREuoTqUMvreJMjC+kfB3iEbvZi9/S7Wb4sw4aKM7kGLwe3JOtUxjNwJI7Ivt/audyprC9Q3LdfTsPa0OloIDwrGKOdOCvCB2oxc9rwGCzo2omFJwUqPRuq7t68Sm4AOuShL5f7XKDl+bgCHtXuG7endyq/yRq9PU13yQik1viEWirXYEkoVUs3XMufIwYaml1cpIuzSxOjg35Vj/4800tAT6Y/rC+ILTKFRkttY8JSV1AUFSw6twhLDT/b9rMcWZizw6pebZy6X6y9Yw4Dvdpa5trcdQZNYWJAAgLX5vfuNcjc9LeoQGkBwUniriTIBoMyyaKljsdp112oJrKYSQr7Hm9EUG4sfbMeAHY/G0kWWbWtMsqVnms4/0kSo/41JPDZmOeu33k1aQhgdMyKsiiyZkSPxs+88vzGLOe6x3zENtxabZmbep1YlWr0hV2uTxwSVNs8X6gco9klFS5BER0nqd/vylNAl/MeWdQttAdM8iKLzzAfNZ7ohQo290Ns9rdvLT4QtVVPIgAIl9oCqbiVc+no85oKJIZilMWWmMop5h47psTyWGNk2ji99iR6QrsRBBPUh0b5870XQHnc4h6OqBQV8MfmvBpqZ9m3ls0kiM/CRcWgwcP1rYY7PlZzDU0=
+  - secure: aucNFjh1/nygaeUGgPNkN/YzSowDo8VhK49XEew5z0d85VUfmPyyUeEyKqEvkaIJuWAwEmRxYSCKb0Y5iP1ZJFgtsOgPZ+z71mwemocpAe3AwF7LjtxehFerr9mlnJEZa1RRP/0aoUIs3+oBXTLYX5rMnzSLLwMByYrkLrR7RZkqIckiZLUt+jq8yOtOHL4hgBmafjjUFe1PimaiXqpF1eAUf2b1bt+GHgxkV8tL9hw5dxe/hx2O10sN+KShcv65yUC2QgY57F/p+jh4h2lQeQYR5RCz3Gn2++BNRMHQ/F5Zxsw12Nwwjb4UoTNUoIdOtxKebu2IthnJ5cvs0I85bReRHGeCxRU2OsAMpQwz4hyTAboKPpC28quHWADuDBxrcDJgFtbwpY0Hq+GRGuwedoMylDNq8oPllpdiZbel1t9GvwfY705prXz0L8gUfqVHHBLNxXcV8XE15FODl7YskhdN/Fs9cCRojvv/ypARe0AgXa99xGRCkj3Rk4vAcqdu5adpGrtLvV9a5uxyHFbKdGkiYW+UDLLDb51clcD9bG1nVYkVniV2edTop8qfHrYjrQkHjwLXKfgeE6307UIwG/qq9v9yVcofU8hj7BLbzpzzgb4lxEvP/NtsR6S+LMHNnUha9I96yyAffq73hnRoSM0zbYrOYeWmEr2MlyPWzcQ=
+  - secure: uxtB0t5+vtCgx0d77Kg5NFeetV/33FqwpWSXsL4QBqkkbe3NIMFS0uxzXxgWNQ0X7h4yBy6B2ihHZrx0AlpAp30itaNIuOyRubaRFqNAh8usNZZgAgCWdI0ittlXweD1uZh+T5feP78zgXPuLYzbZVDWXwyVRZY0gxI/HSA9dx3ThLp3U74M783CHjT1VdYkGebInZlJ050onRoNJFYBI1lvCD3FBLwMGzbBaQPTFvOXMyOiWF8YYU1cNyX4dD5A58NtCggBMM2VYhxiUSIHUcp4mboK/EquWV9TEyOa2lwqWx5uK8TEQdaE4Xz9MUcZ+GG1w2ms+X3uy22jcWJ2mqksmIDx5n05fYtzkqrvJvNxBVvpjxIL0CyCK3cvVC4VuAGP7mA00fuhMFbz6gwxxdQcZS/hRXNfz4W/DJJXbrkGk7+ao/n+tvR+cBl/sb29QLMIqPlPoSiYzbpXWh6De35BuVgj/CZX3hFkAsCYuLP/Tl1fWCBJ1vILzNK64ZjJmkslbsNjirCkAnsM0wUiIVpx5m3NEMjPhzHMRy1eNsr29uH5HfZB9WZokVJ12+ICcDr7LI5OONXNxERUA2TBydMG1CwlP+BRydAG8eSferKKiwZs+l2a62QPwe6ULpyjUq20/bPVqDR88+lBqa75DzzL2MjV0yNDvSyTXMnTkEU=
 script: yarn validate
-
-before_install: yarn global add greenkeeper-lockfile@1
-before_script: greenkeeper-lockfile-update
-after_script: greenkeeper-lockfile-upload
-
-# deploy:
-# - provider: script
-#   script: yarn deploy
-
 after_success: yarn coverage
