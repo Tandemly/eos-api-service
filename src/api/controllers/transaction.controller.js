@@ -4,6 +4,7 @@ const aqp = require('api-query-params');
 const Transaction = require('../models/transaction.model');
 const { handler: errorHandler } = require('../middlewares/error');
 const { mapKeysDeep } = require('../utils/helpers');
+const { postTransaction } = require('../utils/eosd');
 
 /**
  * Load EOS account and append to req.
@@ -41,6 +42,17 @@ exports.list = async (req, res, next) => {
     const txns = await Transaction.list(query);
     res.json(txns);
   } catch (error) {
+    next(error);
+  }
+};
+
+exports.create = async (req, res, next) => {
+  try {
+    const { resp, json } = await postTransaction(req.body);
+    res.status(resp.status);
+    res.json(json);
+  } catch (error) {
+    console.log('>> catch() in controller');
     next(error);
   }
 };

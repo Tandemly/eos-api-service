@@ -23,5 +23,8 @@ module.exports = {
       pass: 'E8nFghPzFh5jbyMFS6',
     },
   },
+  eosd: {
+    uri: process.env.NODE_ENV === 'test' ? process.env.EOSD_CONNECTOR_TEST_URI : process.env.EOSD_CONNECTOR_URI
+  },
   logs: process.env.NODE_ENV === 'production' ? 'combined' : 'dev',
 };
