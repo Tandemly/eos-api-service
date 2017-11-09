@@ -21,7 +21,7 @@ router
    * @apiGroup Transaction
    * @apiPermission user
    *
-   * @apiHeader {String} Athorization  User's access token
+   * @apiHeader {String} Authorization  User's access token
    *
    * @apiUse CollectionParams
    *
@@ -81,7 +81,7 @@ router
    * @apiGroup Transaction
    * @apiPermission user
    *
-   * @apiHeader {String} Athorization  User's access token
+   * @apiHeader {String} Authorization  User's access token
    *
    * @apiUse TransactionModel
    *

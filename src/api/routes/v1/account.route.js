@@ -23,7 +23,7 @@ router
    * @apiGroup Account
    * @apiPermission user
    *
-   * @apiHeader {String} Athorization  User's access token
+   * @apiHeader {String} Authorization  User's access token
    *
    * @apiParam  {Number{1-}}         [page=1]              List page
    * @apiParam  {Number{1-100}}      [perPage=1]           Accounts per page
@@ -49,7 +49,7 @@ router
    * @apiGroup Account
    * @apiPermission user
    *
-   * @apiHeader {String} Athorization  User's access token
+   * @apiHeader {String} Authorization  User's access token
    *
    * @apiSuccess {String}  id                 User's id
    * @apiSuccess {String}  name               User's name
