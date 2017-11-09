@@ -237,7 +237,7 @@ userSchema.statics = {
   /**
    * Find user by email and tries to generate a password reset token
    *
-   * @param {ObjectId} id - The objectId of user.
+   * @param {ObsectId} id - The objectId of user.
    * @returns {Promise<User, APIError>}
    */
   async findAndGenerateResetToken(options) {
