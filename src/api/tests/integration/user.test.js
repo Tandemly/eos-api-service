@@ -73,6 +73,10 @@ describe('Users API', () => {
       .accessToken;
   });
 
+  after(async () => {
+    await User.remove({});
+  });
+
   describe('POST /v1/users', () => {
     it('should create a new user when request is ok', () => {
       return request(app)
