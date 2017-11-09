@@ -8,6 +8,7 @@ const {
   passwordReset,
   passwordResetChange,
   // oAuth,
+  requestKey,
   refresh,
 } = require('../../validations/auth.validation');
 
@@ -121,9 +122,8 @@ router
  */
 router.route('/refresh-token').post(validate(refresh), controller.refresh);
 
-/**
- * TODO: POST /v1/auth/reset-password
- */
+// Request Long-lived API Key
+router.route('/request-api-key').post(validate(requestKey), controller.requestKey);
 
 /**
  * @apiIgnore Not Implemented for this service

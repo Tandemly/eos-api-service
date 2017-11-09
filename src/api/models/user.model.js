@@ -99,14 +99,26 @@ userSchema.method({
   },
 
   token() {
-    const playload = {
+    const payload = {
       exp: moment()
         .add(jwtExpirationInterval, 'minutes')
         .unix(),
       iat: moment().unix(),
       sub: this._id,
     };
-    return jwt.encode(playload, jwtSecret);
+    return jwt.encode(payload, jwtSecret);
+  },
+
+  apiKey(ident) {
+    const rounds = env === 'test' ? 1 : 10;
+    const hash = bcrypt.hashSync(ident, rounds);
+    const payload = {
+      iat: moment().unix(),
+      sub: this._id,
+      jti: hash,
+      roles: ['user'],
+    };
+    return jwt.encode(payload, jwtSecret);
   },
 
   async passwordMatches(password) {
@@ -134,6 +146,7 @@ userSchema.statics = {
       if (mongoose.Types.ObjectId.isValid(id)) {
         user = await this.findById(id).exec();
       }
+      // console.log(`--> User.get: id=${id}, user:`, user);
       if (user) {
         return user;
       }
@@ -143,6 +156,7 @@ userSchema.statics = {
         status: httpStatus.NOT_FOUND,
       });
     } catch (error) {
+      // console.log('--> User.get (error):', error);
       throw error;
     }
   },
@@ -183,8 +197,9 @@ userSchema.statics = {
       status: httpStatus.UNAUTHORIZED,
       isPublic: true,
     };
-    if (password) {
-      if (user && user.passwordMatches(password)) {
+    if (user && password) {
+      const matches = await user.passwordMatches(password);
+      if (user && matches) {
         return { user, accessToken: user.token() };
       }
       err.message = 'Incorrect email or password';
@@ -192,6 +207,29 @@ userSchema.statics = {
       return { user, accessToken: user.token() };
     } else {
       err.message = 'Incorrect email or refreshToken';
+    }
+    throw new APIError(err);
+  },
+
+  async findAndGenerateAPIKey({ email, password, ident }) {
+    if (!email) {
+      throw new APIError({
+        message: 'An email is required to request an API key',
+      });
+    }
+    const user = await this.findOne({ email }).exec();
+    const err = {
+      status: httpStatus.UNAUTHORIZED,
+      isPublic: true,
+    };
+    if (user && password) {
+      const matches = await user.passwordMatches(password);
+      if (user && matches) {
+        return { user, accessToken: user.apiKey(ident) };
+      }
+      err.messages = 'Incorrect email or password';
+    } else {
+      err.message = 'Incorrect or missing password';
     }
     throw new APIError(err);
   },

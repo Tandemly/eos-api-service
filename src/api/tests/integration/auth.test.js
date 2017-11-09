@@ -173,7 +173,67 @@ describe('Authentication API', () => {
           const code = res.body.code;
           const message = res.body.message;
           expect(code).to.be.equal(401);
-          expect(message).to.be.equal('Incorrect email or password');
+          expect(message).to.be.equal('Incorrect email or refreshToken');
+        });
+    });
+  });
+
+  describe('POST /v1/auth/request-api-key', () => {
+    it('should return an API accessToken when email and password matches', () => {
+      return request(app)
+        .post('/v1/auth/request-api-key')
+        .send({ ...dbUser, ident: 'my-app' })
+        .expect(httpStatus.OK)
+        .then((res) => {
+          delete dbUser.password;
+          expect(res.body.token).to.have.a.property('tokenType');
+          expect(res.body.token).to.have.a.property('accessToken');
+          expect(res.body.token).to.have.a.property('ident');
+          expect(res.body.user).to.include(dbUser);
+        });
+    });
+
+    it('should report error when email and password are not provided', () => {
+      return request(app)
+        .post('/v1/auth/request-api-key')
+        .send({})
+        .expect(httpStatus.BAD_REQUEST)
+        .then((res) => {
+          const field = res.body.errors[0].field;
+          const location = res.body.errors[0].location;
+          const messages = res.body.errors[0].messages;
+          expect(field).to.be.equal('email');
+          expect(location).to.be.equal('body');
+          expect(messages).to.include('"email" is required');
+        });
+    });
+
+    it('should report error when the email provided is not valid', () => {
+      user.email = 'this_is_not_an_email';
+      return request(app)
+        .post('/v1/auth/request-api-key')
+        .send({ ...user, ident: 'my-app' })
+        .expect(httpStatus.BAD_REQUEST)
+        .then((res) => {
+          const field = res.body.errors[0].field;
+          const location = res.body.errors[0].location;
+          const messages = res.body.errors[0].messages;
+          expect(field).to.be.equal('email');
+          expect(location).to.be.equal('body');
+          expect(messages).to.include('"email" must be a valid email');
+        });
+    });
+
+    it("should report error when email and password don't match", () => {
+      return request(app)
+        .post('/v1/auth/request-api-key')
+        .send({ ...user, ident: 'my-app' })
+        .expect(httpStatus.UNAUTHORIZED)
+        .then((res) => {
+          const code = res.body.code;
+          const message = res.body.message;
+          expect(code).to.be.equal(401);
+          expect(message).to.be.equal('Incorrect or missing password');
         });
     });
   });

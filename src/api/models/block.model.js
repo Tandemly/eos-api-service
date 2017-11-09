@@ -34,7 +34,6 @@ const blockSchema = new mongoose.Schema(
     prev_block_id: {
       type: String,
       required: true,
-      unique: true,
       length: 64,
     },
     timestamp: {
@@ -44,15 +43,13 @@ const blockSchema = new mongoose.Schema(
     transaction_merkle_root: {
       type: String,
       required: true,
-      unique: true,
       length: 64,
     },
     producer_account_id: {
       type: String,
       match: /^[.12345a-z]+$/,
-      required: true,
-      unique: true,
       trim: true,
+      required: true,
       lowercase: true,
       minlength: 1,
       maxlength: 13,
