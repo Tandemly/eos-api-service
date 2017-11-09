@@ -17,6 +17,11 @@ function generateTokenResponse(user, accessToken) {
   return { tokenType, accessToken, refreshToken, expiresIn };
 }
 
+function generateAPITokenResponse(ident, accessToken) {
+  const tokenType = 'Bearer';
+  return { tokenType, accessToken, ident };
+}
+
 /**
  * Returns jwt token if registration was successful
  * @public
@@ -45,6 +50,18 @@ exports.login = async (req, res, next) => {
     return res.json({ token, user: userTransformed });
   } catch (error) {
     return next(error);
+  }
+};
+
+exports.requestKey = async (req, res, next) => {
+  try {
+    const { email, password, ident } = req.body;
+    const { user, accessToken } = await User.findAndGenerateAPIKey(req.body);
+    const token = generateAPITokenResponse(ident, accessToken);
+    const userTransformed = user.transform();
+    res.json({ user: userTransformed, token });
+  } catch (error) {
+    next(error);
   }
 };
 

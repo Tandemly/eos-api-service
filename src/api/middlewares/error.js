@@ -14,6 +14,7 @@ const handler = (err, req, res, next) => {
     errors: err.errors,
     stack: err.stack,
   };
+  // console.log('-> global error handler:', err);
 
   if (env !== 'development') {
     delete response.stack;
@@ -32,6 +33,7 @@ exports.handler = handler;
 exports.converter = (err, req, res, next) => {
   let convertedError = err;
 
+  // console.log('-> global error converter:', err);
   if (err instanceof expressValidation.ValidationError) {
     convertedError = new APIError({
       message: 'Validation error',

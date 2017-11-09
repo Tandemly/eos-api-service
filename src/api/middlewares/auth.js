@@ -15,17 +15,25 @@ const handleJWT = (req, res, next, roles) => async (err, user, info) => {
     stack: error ? error.stack : undefined,
   });
 
+  // console.log(`--> [authenticate] (roles=${roles}) handleJWT(${err}, ${user._id}, ${info})`);
   try {
-    if (error || !user) throw error;
+    if (error || !user) {
+      throw error;
+    }
     await logIn(user, { session: false });
   } catch (e) {
     return next(apiError);
   }
 
   if (roles === LOGGED_USER) {
-    if (user.role !== 'admin' && req.params.userId !== user._id.toString()) {
+    // console.log(
+    //   `--> [authenticate] user.role=${user.role}, req.params.userId=${req.params
+    //     .userId}, user._id=${user._id.toString()}`,
+    // );
+    if (user.role !== 'admin' && req.params.userId.toString() !== user._id.toString()) {
       apiError.status = httpStatus.FORBIDDEN;
       apiError.message = 'Forbidden';
+      // console.log('--> [authenticate] apiError:', apiError);
       return next(apiError);
     }
   } else if (!roles.includes(user.role)) {

@@ -15,7 +15,6 @@ const messageSchema = new mongoose.Schema(
     transaction_id: {
       type: String,
       required: true,
-      unique: true,
       length: 64,
     },
     authorization: [
@@ -28,7 +27,6 @@ const messageSchema = new mongoose.Schema(
       type: String,
       match: /^[.12345a-z]+$/,
       required: true,
-      unique: true,
       trim: true,
       lowercase: true,
       minlength: 1,

@@ -1,8 +1,8 @@
-const httpStatus = require("http-status");
-const { omit } = require("lodash");
-const aqp = require("api-query-params");
-const User = require("../models/user.model");
-const { handler: errorHandler } = require("../middlewares/error");
+const httpStatus = require('http-status');
+const { omit } = require('lodash');
+const aqp = require('api-query-params');
+const User = require('../models/user.model');
+const { handler: errorHandler } = require('../middlewares/error');
 
 /**
  * Load user and append to req.
@@ -11,9 +11,11 @@ const { handler: errorHandler } = require("../middlewares/error");
 exports.load = async (req, res, next, id) => {
   try {
     const user = await User.get(id);
+    // console.log('--> Controller [load] (User): user=', user.transform());
     req.locals = { user };
     return next();
   } catch (error) {
+    // console.log(`--> Controller [load] (User): error ${error}`);
     return errorHandler(error, req, res);
   }
 };
@@ -22,7 +24,10 @@ exports.load = async (req, res, next, id) => {
  * Get user
  * @public
  */
-exports.get = (req, res) => res.json(req.locals.user.transform());
+exports.get = (req, res) => {
+  // console.log('--> Controller [get] (User): user=', req.locals.user);
+  res.json(req.locals.user.transform());
+};
 
 /**
  * Get logged in user info
@@ -53,8 +58,8 @@ exports.replace = async (req, res, next) => {
   try {
     const { user } = req.locals;
     const newUser = new User(req.body);
-    const ommitRole = user.role !== "admin" ? "role" : "";
-    const newUserObject = omit(newUser.toObject(), "_id", ommitRole);
+    const ommitRole = user.role !== 'admin' ? 'role' : '';
+    const newUserObject = omit(newUser.toObject(), '_id', ommitRole);
 
     await user.update(newUserObject, { override: true, upsert: true });
     const savedUser = await User.findById(user._id);
@@ -70,7 +75,7 @@ exports.replace = async (req, res, next) => {
  * @public
  */
 exports.update = (req, res, next) => {
-  const ommitRole = req.locals.user.role !== "admin" ? "role" : "";
+  const ommitRole = req.locals.user.role !== 'admin' ? 'role' : '';
   const updatedUser = omit(req.body, ommitRole);
   const user = Object.assign(req.locals.user, updatedUser);
 

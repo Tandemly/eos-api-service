@@ -2,7 +2,7 @@ const express = require('express');
 const validate = require('express-validation');
 const controller = require('../../controllers/transaction.controller');
 const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth');
-const { listTransactions } = require('../../validations/transaction.validation');
+const { listTransactions, createTransaction } = require('../../validations/transaction.validation');
 
 const router = express.Router({ mergeParams: true });
 
@@ -69,7 +69,94 @@ router
    *  //...
    * ]
    */
-  .get(authorize(), validate(listTransactions), controller.list);
+  .get(authorize(), validate(listTransactions), controller.list)
+  /**
+   * @api {post} v1/transactions Create a new transactions
+   * @apiDescription Create a new transaction with one or more messages
+   * @apiVersion 1.0.0
+   * @apiName CreateTransactions
+   * @apiGroup Transaction
+   * @apiPermission user
+   *
+   * @apiHeader {String} Athorization  User's access token
+   *
+   * @apiSuccess {Object} object with transaction id and the processed transaction
+   *
+   * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
+   * 
+   * @apiSuccessExample {json} Success Example:
+   * {
+   *  "transaction_id": "450636be197a79830b4ec7c4689d012b867272abd1785ef6d8c7e69bfb29fa0b",
+   *  "processed": {
+   *      "refBlockNum": 0,
+   *      "refBlockPrefix": 0,
+   *      "expiration": "2017-11-01T19:15:00",
+   *      "scope": [
+   *          "eos",
+   *          "inita"
+   *      ],
+   *      "signatures": [],
+   *      "messages": [
+   *          {
+   *              "code": "eos",
+   *              "type": "newaccount",
+   *              "authorization": [
+   *                  {
+   *                      "account": "inita",
+   *                      "permission": "active"
+   *                  }
+   *              ],
+   *              "data": {
+   *                  "creator": "inita",
+   *                  "name": "test",
+   *                  "owner": {
+   *                      "threshold": 1,
+   *                      "keys": [
+   *                          {
+   *                              "key": "EOS4toFS3YXEQCkuuw1aqDLrtHim86Gz9u3hBdcBw5KNPZcursVHq",
+   *                              "weight": 1
+   *                          }
+   *                      ],
+   *                      "accounts": []
+   *                  },
+   *                  "active": {
+   *                      "threshold": 1,
+   *                      "keys": [
+   *                          {
+   *                              "key": "EOS7d9A3uLe6As66jzN8j44TXJUqJSK3bFjjEEqR4oTvNAB3iM9SA",
+   *                              "weight": 1
+   *                          }
+   *                      ],
+   *                      "accounts": []
+   *                  },
+   *                  "recovery": {
+   *                      "threshold": 1,
+   *                      "keys": [],
+   *                      "accounts": [
+   *                          {
+   *                              "permission": {
+   *                                  "account": "inita",
+   *                                  "permission": "active"
+   *                              },
+   *                              "weight": 1
+   *                          }
+   *                      ]
+   *                  },
+   *                  "deposit": "0.00000001 EOS"
+   *              },
+   *              "hex_data": "000000000093dd74000000000090b1ca01000000010200b35ad060d629717bd3dbec82731094dae9cd7e9980c39625ad58fa7f9b654b010000010000000103683cff820ebe53b9b4b0f2be7eb53ab78c9bb43a41294d6ddaaaf86cf5fd4f75010000010000000001000000000093dd7400000000a8ed32320100010000000000000008454f5300000000"
+   *          }
+   *      ],
+   *      "output": [
+   *          {
+   *              "notify": [],
+   *              "deferred_transactions": []
+   *          }
+   *      ]
+   *   }
+   * }
+   */
+  .post(authorize(), validate(createTransaction), controller.create);
 
 router
   .route('/:txnId')

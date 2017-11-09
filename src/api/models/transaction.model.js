@@ -19,12 +19,10 @@ const transactionSchema = new mongoose.Schema(
     sequence_num: {
       type: Number,
       required: true,
-      unique: true,
     },
     block_id: {
       type: String,
       required: true,
-      unique: true,
       length: 64,
     },
     ref_block_num: {
@@ -47,7 +45,6 @@ const transactionSchema = new mongoose.Schema(
       {
         type: String,
         required: true,
-        unique: true,
         length: 64,
       },
     ],
