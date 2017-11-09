@@ -122,7 +122,31 @@ router
  */
 router.route('/refresh-token').post(validate(refresh), controller.refresh);
 
-// Request Long-lived API Key
+/**
+ * @api {post} v1/auth/request-api-key Request API key
+ * @apiDescription Get an long-term API key
+ * @apiVersion 1.0.0
+ * @apiName RequestAPIKey
+ * @apiGroup Auth
+ * @apiPermission public
+ *
+ * @apiParam  {String}         email     User's email
+ * @apiParam  {String{..128}}  password  User's password
+ * @apiParam  {String}         ident     App name that will be using api key
+ *
+ * @apiSuccess  {String}  token.tokenType     Access Token's type
+ * @apiSuccess  {String}  token.accessToken   Authorization Token
+ * @apiSuccess  {String}  token.ident         Identifier for API token
+ *
+ * @apiSuccess  {String}  user.id             User's id
+ * @apiSuccess  {String}  user.name           User's name
+ * @apiSuccess  {String}  user.email          User's email
+ * @apiSuccess  {String}  user.role           User's role
+ * @apiSuccess  {Date}    user.createdAt      Timestamp
+ *
+ * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
+ * @apiError (Unauthorized 401)  Unauthorized     Incorrect email or password
+ */
 router.route('/request-api-key').post(validate(requestKey), controller.requestKey);
 
 /**
