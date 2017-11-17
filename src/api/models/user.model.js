@@ -329,7 +329,7 @@ userSchema.statics = {
     const $limit = { $limit: limit };
     const $sort = sort ? { $sort: sort } : null;
 
-    const agg = compact([$match, $project, $skip, $limit, $sort]);
+    const agg = compact([$match, $project, $sort, $skip, $limit]);
 
     return this.aggregate(agg).exec();
   },

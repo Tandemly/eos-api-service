@@ -1,7 +1,7 @@
 const express = require('express');
 const validate = require('express-validation');
 const controller = require('../../controllers/transaction.controller');
-const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth');
+const { authorize } = require('../../middlewares/auth');
 const { listTransactions, createTransaction } = require('../../validations/transaction.validation');
 
 const router = express.Router({ mergeParams: true });
@@ -71,6 +71,7 @@ router
    */
   .get(authorize(), validate(listTransactions), controller.list)
   /**
+   * @apiIgnore
    * @api {post} v1/transactions Create a new transactions
    * @apiDescription Create a new transaction with one or more messages
    * @apiVersion 1.0.0
@@ -80,7 +81,11 @@ router
    *
    * @apiHeader {String} Athorization  User's access token
    *
-   * @apiSuccess {Object} object with transaction id and the processed transaction
+   * @apiParam  {Array{Object}}         messages  List of messages to include in transaction, messages should follow
+   *                                      the format defined by the message type's ABI. 
+   * @apiParam  {Array{String}}         signatures=[] array of signatures for transaction 
+   * @apiParam  {Array{String}}         [scope] array of accounts involved in this transaction, otherwise service 
+   *                                      will try to discover the scope based on the messasge content
    *
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
    * 

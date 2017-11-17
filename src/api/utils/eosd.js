@@ -1,5 +1,6 @@
+/* eslint-disable no-bitwise */
 const fetch = require('isomorphic-fetch');
-const { omit, uniq, map, flatMap } = require('lodash');
+const { uniq, map, flatMap } = require('lodash');
 const { eosd } = require('../../config/vars');
 const { formatISO } = require('../utils/helpers');
 
@@ -26,18 +27,18 @@ const request = async (path, options = {}) => {
   return { resp, json };
 };
 
-const postTransaction = async ({ messages, signatures }) => {
+const postTransaction = async ({ messages, signatures, scope }) => {
   const { resp, json } = await request('/v1/chain/get_info');
   const msgList = Array.isArray(messages) ? messages : [messages];
   const transaction = {
     refBlockNum: json.head_block_num & 0xffff,
     refBlockPrefix: new Buffer(json.head_block_id, 'hex').readUInt32LE(8),
     expiration: formatISO(new Date(`${json.head_block_time}Z`)),
-    scope: getScope(msgList),
+    scope: scope ? uniq(scope).sort() : getScope(msgList),
     messages: msgList,
     signatures,
   };
-  return await request('/v1/chain/push_transaction', {
+  return request('/v1/chain/push_transaction', {
     method: 'POST',
     body: JSON.stringify(transaction),
   });

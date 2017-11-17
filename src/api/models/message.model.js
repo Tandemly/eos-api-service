@@ -102,8 +102,8 @@ messageSchema.statics = {
    */
   list({ skip = 0, limit = 30, sort, filter, projection }) {
     return this.find(filter)
-      .sort(sort || { createdAt: -1 })
       .select(projection)
+      .sort(sort || { createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .exec();

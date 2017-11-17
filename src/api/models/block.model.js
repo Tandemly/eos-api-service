@@ -167,7 +167,7 @@ blockSchema.statics = {
     const $limit = { $limit: limit };
     const $sort = sort ? { $sort: sort } : null;
 
-    const agg = compact([$match, $lookup, $project, $skip, $limit, $sort]);
+    const agg = compact([$match, $lookup, $project, $sort, $skip, $limit]);
 
     return this.aggregate(agg).exec();
   },
