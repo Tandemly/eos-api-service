@@ -1,9 +1,6 @@
-const httpStatus = require('http-status');
-const { omit } = require('lodash');
 const aqp = require('api-query-params');
 const Transaction = require('../models/transaction.model');
 const { handler: errorHandler } = require('../middlewares/error');
-const { mapKeysDeep } = require('../utils/helpers');
 const { postTransaction } = require('../utils/eosd');
 
 /**
@@ -52,7 +49,6 @@ exports.create = async (req, res, next) => {
     res.status(resp.status);
     res.json(json);
   } catch (error) {
-    console.log('>> catch() in controller');
     next(error);
   }
 };
