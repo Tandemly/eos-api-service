@@ -1,7 +1,9 @@
 const aqp = require('api-query-params');
+const fetch = require('isomorphic-fetch');
 const Transaction = require('../models/transaction.model');
 const { handler: errorHandler } = require('../middlewares/error');
-const { postTransaction } = require('../utils/eosd');
+// const { postTransaction } = require('../utils/eosd');
+const { eosd } = require('../../config/vars');
 
 /**
  * Load EOS account and append to req.
@@ -45,7 +47,20 @@ exports.list = async (req, res, next) => {
 
 exports.create = async (req, res, next) => {
   try {
-    const { resp, json } = await postTransaction(req.body);
+    // const { resp, json } = await postTransaction(req.body);
+    console.log(`--> fetching ${eosd.uri}/v1/chain/push_transaction`);
+    console.log('--> body:', JSON.stringify(req.body, null, 2));
+    const resp = await fetch(`${eosd.uri}/v1/chain/push_transaction`, {
+      method: 'POST',
+      body: JSON.stringify(req.body),
+    });
+    let json;
+    if (resp.headers.get('content-type').indexOf('json') > -1) {
+      const text = await resp.text();
+      json = JSON.parse(text);
+    } else {
+      json = await resp.json();
+    }
     res.status(resp.status);
     res.json(json);
   } catch (error) {
