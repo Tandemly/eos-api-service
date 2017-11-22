@@ -1,3 +1,49 @@
+# EOS API Services
+
+## Getting Started
+
+```bash
+$ git clone https://github.com/Tandemly/eos-api-service.git
+$ cd eos-api-service
+$ cp .env.example .env
+```
+
+## Configuration (.env)
+The API services are configured through a local `.env` file.  The standard setup is as follows:
+
+```
+NODE_ENV=development
+PORT=8888
+JWT_SECRET=bA2xcjpf8y5aSUFsNB2qN5yymUBSs6es3qHoFpGkec75RCeBb8cpKauGefw5qy4
+JWT_EXPIRATION_MINUTES=60
+MONGO_URI=mongodb://eosdemo:eosdemo1234@ds111336.mlab.com:11336/eos-demo
+MONGO_URI_TESTS=mongodb://apiuser:apiuser123!@ds127105.mlab.com:27105/api-service-test
+EOSD_CONNECTOR_URI=https://demo-eos-deployment-mrvbxqxaro.now.sh
+EOSD_CONNECTOR_TEST_URI=http://localhost:8888
+```
+
+You can set the `NODE_ENV` to which ever environment you're running in (`production` or `development`) and the port. Because the
+API Service uses JWT (JSON Web Tokens) for authentication/authorization, you'll need to set a `JWT_SECRET` and a `JWT_EXPIRATION_MINUTES`.
+Ensure any secret you use is sufficiently long and random (you can use md5, sha256, et al) to generate one.  
+
+The `MONGO_URI` should point to the same mongodb host that the particular eosd ndoe you are connecting to is writing out to.  That
+eosd node and the api service share this datbase.  The `_TESTS_URI` environments are only used in `test` environment builds on Travis.
+
+## Running
+Once configured, you can get the API Service up and running using the following:
+
+```bash
+$ yarn
+$ yarn docs
+$ yarn start
+```
+
+Running `yarn start` will run the service using pm2 and with `NODE_ENV=production`. The command `yarn docs` generates the API documentation
+which is available from the running API service at `/v1/docs`.  You can get a simple status of the API service by performing a `GET` on the 
+`/v1/status` endpoint which should return a 200 Ok.
+
+
+
 # Express ES2017 REST API Boilerplate
 
 Boilerplate/Generator/Starter Project for building RESTful APIs and microservices using Node.js, Express and MongoDB
