@@ -22,8 +22,10 @@ router
   .route('/')
   /**
    * @api {get} v1/blocks Get list of blocks
-   * @apiDescription Get a list of EOS blocks
-   * 
+   * @apiDescription Get a list of EOS blocks. This will get a list of all the irreversible blocks on
+   * the EOS blockchain. By default, it returns the most recent 30 blocks.  You can request more or less
+   * blocks using the paging parameters.
+   *
    * @apiVersion 1.0.0
    * @apiName ListBlocks
    * @apiGroup Block
@@ -36,7 +38,7 @@ router
    * @apiSuccess {Object[]} blocks List of EOS blocks.
    *
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
-   * 
+   *
    * @apiSuccessExample {json} Success Response:
    * [
    *  {
@@ -106,7 +108,8 @@ router
   .route('/:blockIdent')
   /**
    * @api {get} v1/blocks/:ident Get Block
-   * @apiDescription Get Block information for a single block
+   * @apiDescription Get Block information for a single block.  The specified `:ident` path param can be
+   * either the `block_id` or `block_num` of the specific block being requested.
    * @apiVersion 1.0.0
    * @apiName GetBlock
    * @apiGroup Block
@@ -115,15 +118,15 @@ router
    *  curl -i http://localhost:3000/v1/blocks/00000001bd27a3d68b5e66519cfac498d2e96da9bfd1bacf4110f4c7c98feca3
    *
    * @apiHeader {String} Athorization  User's access token
-   * 
+   *
    * @apiParam {mixed} ident the `block_id {String}` or `block_num {Number}` of the desired block
    * @apiUse FieldParam
-   * 
+   *
    * @apiUse BlockModel
    *
    * @apiError (Unauthorized 401) Unauthorized Only authenticated users can access the data
    * @apiError (Not Found 404)    NotFound     Block does not exist
-   * 
+   *
    * @apiSuccessExample {json} Success Example:
    * {
    *      "_id": "59e88fedf9a2f33694149feb",
@@ -143,7 +146,8 @@ router
   .route('/:blockIdent/transactions')
   /**
    * @api {get} v1/blocks/:blockIdent/transactions Get transactions on Block
-   * @apiDescription Get a list of EOS transactions for a given block
+   * @apiDescription Get a list of EOS transactions for a given block. Using the identifying `block_id` or `block_num`
+   * of the specific block, requests all the transactions associated with that block.
    * @apiVersion 1.0.0
    * @apiName ListTransactionsInBlock
    * @apiGroup Transaction
@@ -156,7 +160,7 @@ router
    * @apiSuccess {Object[]} transactions List of EOS transactions for the block.
    *
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
-   * 
+   *
    * @apiSuccessExample {json} Success Example:
    * [
    *  {
@@ -203,7 +207,9 @@ router
   .route('/:blockIdent/transactions/:txnId')
   /**
    * @api {get} v1/blocks/:blockIdent/transactions/:txnId Get Transaction on Block
-   * @apiDescription Get Transaction information for a specific block->transaction
+   * @apiDescription Get Transaction information for a specific block->transaction. Using the specific `block_id` or `block_num`
+   * for the identified block and the `transaction_id` for the specific transaction, request that transaction's information,
+   * including messages.
    * @apiVersion 1.0.0
    * @apiName GetTransactionInBlock
    * @apiGroup Transaction
@@ -215,7 +221,7 @@ router
    *
    * @apiError (Unauthorized 401) Unauthorized Only authenticated users can access the data
    * @apiError (Not Found 404)    NotFound     Block does not exist
-   * 
+   *
    * @apiSuccessExample {json} Success Example:
    * {
    *      "_id": "59e88fa3f9a2f33694149f53",

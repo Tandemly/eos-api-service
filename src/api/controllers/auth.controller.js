@@ -7,9 +7,9 @@ const { jwtExpirationInterval } = require('../../config/vars');
 const { mail } = require('../utils/email');
 
 /**
-* Returns a formated object with tokens
-* @private
-*/
+ * Returns a formated object with tokens
+ * @private
+ */
 function generateTokenResponse(user, accessToken) {
   const tokenType = 'Bearer';
   const refreshToken = RefreshToken.generate(user).token;
@@ -85,7 +85,7 @@ exports.passwordReset = async (req, res, next) => {
           If you requested a password reset for ${email}, click the link below. If you
           didn't make this request, ignore this email.
         </p>
-        <a href="${url}?token=${resetToken.token}">Reset Password</a> 
+        <a href="${url}?token=${resetToken.token}&id=${user.id}">Reset Password</a> 
       `,
     });
     const userTransformed = user.transform();
@@ -99,7 +99,7 @@ exports.passwordReset = async (req, res, next) => {
 };
 
 /**
- * Returns success with a valid, existing email + token 
+ * Returns success with a valid, existing email + token
  * and removes any existing refresh (jwt) and reset tokens
  * for the user identified by the email.
  * @public
