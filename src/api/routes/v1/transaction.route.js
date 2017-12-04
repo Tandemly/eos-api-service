@@ -15,7 +15,9 @@ router
   .route('/')
   /**
    * @api {get} v1/transactions Get list of transactions
-   * @apiDescription Get a list of all EOS transactions
+   * @apiDescription Get a list of all EOS transactions. Allows retreiving a list of transactions, 30 most recent by default. You
+   * can change the number of transactions returned via the paging parameters, or change the sorting or filtering to get a more
+   * specific list of transactions.
    * @apiVersion 1.0.0
    * @apiName ListTransactions
    * @apiGroup Transaction
@@ -28,7 +30,7 @@ router
    * @apiSuccess {Object[]} transactions List of EOS transactions.
    *
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
-   * 
+   *
    * @apiSuccessExample {json} Success Example:
    * [
    *  {
@@ -71,24 +73,20 @@ router
    */
   .get(authorize(), validate(listTransactions), controller.list)
   /**
-   * @apiIgnore
    * @api {post} v1/transactions Create a new transactions
-   * @apiDescription Create a new transaction with one or more messages
+   * @apiDescription Request the creation of a new transaction on the EOS blockchain. Takes a fully formed and signed
+   * transaction and proxies it to the `eosd` node the API service is connected to for creation.  Returns a `transaction_id`
+   * along with the processed transaction and other meta information on success.
    * @apiVersion 1.0.0
    * @apiName CreateTransactions
    * @apiGroup Transaction
    * @apiPermission user
    *
    * @apiHeader {String} Athorization  User's access token
-   *
-   * @apiParam  {Array{Object}}         messages  List of messages to include in transaction, messages should follow
-   *                                      the format defined by the message type's ABI. 
-   * @apiParam  {Array{String}}         signatures=[] array of signatures for transaction 
-   * @apiParam  {Array{String}}         [scope] array of accounts involved in this transaction, otherwise service 
-   *                                      will try to discover the scope based on the messasge content
+   * @apiUse TransactionPostModel
    *
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
-   * 
+   *
    * @apiSuccessExample {json} Success Example:
    * {
    *  "transaction_id": "450636be197a79830b4ec7c4689d012b867272abd1785ef6d8c7e69bfb29fa0b",
@@ -167,7 +165,8 @@ router
   .route('/:txnId')
   /**
    * @api {get} v1/transactions/:txnId Get a Transaction
-   * @apiDescription Get Transaction information for a sepcific transaction
+   * @apiDescription Get Transaction information for a sepcific transaction. Regardless of block number, access a specific
+   * transaction directly by its `transaction_id`.
    * @apiVersion 1.0.0
    * @apiName GetTransaction
    * @apiGroup Transaction
@@ -179,7 +178,7 @@ router
    *
    * @apiError (Unauthorized 401) Unauthorized Only authenticated users can access the data
    * @apiError (Not Found 404)    NotFound     Block does not exist
-   * 
+   *
    * @apiSuccessExample {json} Success Example:
    *  {
    *      "_id": "59e88fa3f9a2f33694149f56",

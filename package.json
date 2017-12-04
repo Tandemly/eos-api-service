@@ -1,9 +1,13 @@
 {
   "name": "api-service",
   "version": "1.0.0",
-  "description": "Basic REST API Services",
+  "description": "Basic REST API Services for EOS",
   "apidoc": {
     "title": "API Guide",
+    "header": {
+      "title": "Introduction",
+      "filename": "src/api/routes/header.md"
+    },
     "order": [
       "Auth",
       "User",
