@@ -71,7 +71,8 @@ exports.createFromFaucet = async (req, res, next) => {
       if (!faucet.notify) {
         throw new APIError({
           status: httpStatus.BAD_REQUEST,
-          message: "You must provide an email if sending 'true' to wants_tokens",
+          message:
+            'Unable to notify the network administrator about your request for tokens. No notify email was configured',
         });
       }
 
