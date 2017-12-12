@@ -24,7 +24,13 @@ module.exports = {
     },
   },
   eosd: {
-    uri: process.env.NODE_ENV === 'test' ? process.env.EOSD_CONNECTOR_TEST_URI : process.env.EOSD_CONNECTOR_URI
+    uri:
+      process.env.NODE_ENV === 'test'
+        ? process.env.EOSD_CONNECTOR_TEST_URI
+        : process.env.EOSD_CONNECTOR_URI,
+  },
+  faucet: {
+    notify: process.env.FAUCET_NOTIFY,
   },
   logs: process.env.NODE_ENV === 'production' ? 'combined' : 'dev',
 };

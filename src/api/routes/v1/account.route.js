@@ -2,7 +2,7 @@ const express = require('express');
 const validate = require('express-validation');
 const controller = require('../../controllers/account.controller');
 const { authorize, ADMIN, LOGGED_USER } = require('../../middlewares/auth');
-const { listAccounts } = require('../../validations/account.validation');
+const { listAccounts, createAccount } = require('../../validations/account.validation');
 
 const router = express.Router();
 
@@ -61,5 +61,32 @@ router
    * @apiError (Not Found 404)    NotFound     Account does not exist
    */
   .get(authorize(), controller.get);
+
+router
+  .route('/faucet')
+  /**
+   * @api {post} v1/accounts/faucet Create a new EOS account (faucet)
+   * @apiDescription Request the creation of a new EOS account via the faucet mechanism. This is only
+   * available on thes testnet(s). If `wants_tokens` is true, then an email will be sent to the
+   * testnet coordinator, who should then follow up with a questionnaire that is required to receive
+   * test tokens on the new account.
+   * @apiVersion 1.0.0
+   * @apiName NewAccountFaucet
+   * @apiGroup Account
+   * @apiPermission user
+   *
+   * @apiHeader {String} Athorization  User's access token
+   *
+   * @apiSuccess (Created 201) {String}  name           Requested EOS account name
+   * @apiSuccess (Created 201) {String}  email          Requesting user's email address
+   * @apiSuccess (Created 201) {Boolean} wants_tokens   Does the user want to request test tokens for development?
+   * @apiSuccess (Created 201) {Object}  keys
+   * @apiSuccess (Created 201) {String}  keys.active    The valid, "active" public key for the new account
+   * @apiSuccess (Created 201) {String}  keys.owner     The valid, "owner" public key for the new account
+   *
+   * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
+   * @apiError (Too Many Requests 429) TooManyRequests Rate limit exceeded, try again later
+   */
+  .post(authorize(), validate(createAccount), controller.createFromFaucet);
 
 module.exports = router;
