@@ -77,13 +77,15 @@ router
    *
    * @apiHeader {String} Athorization  User's access token
    *
-   * @apiSuccess (Created 201) {String}  name           Requested EOS account name
-   * @apiSuccess (Created 201) {String}  email          Requesting user's email address
-   * @apiSuccess (Created 201) {Boolean} wants_tokens   Does the user want to request test tokens for development?
-   * @apiSuccess (Created 201) {Object}  keys
-   * @apiSuccess (Created 201) {String}  keys.active    The valid, "active" public key for the new account
-   * @apiSuccess (Created 201) {String}  keys.owner     The valid, "owner" public key for the new account
+   * @apiParam (Created 201) {String}  name           Requested EOS account name
+   * @apiParam (Created 201) {String}  email          Requesting user's email address
+   * @apiParam (Created 201) {Boolean} wants_tokens   Does the user want to request test tokens for development?
+   * @apiParam (Created 201) {Object}  keys
+   * @apiParam (Created 201) {String}  keys.active    The valid, "active" public key for the new account
+   * @apiParam (Created 201) {String}  keys.owner     The valid, "owner" public key for the new account
    *
+   * @apiSuccess (Created 201) {Object} response      Response from the eosd server
+   * 
    * @apiError (Unauthorized 401)  Unauthorized  Only authenticated users can access the data
    * @apiError (Too Many Requests 429) TooManyRequests Rate limit exceeded, try again later
    */
