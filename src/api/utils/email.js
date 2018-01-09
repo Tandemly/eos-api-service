@@ -11,6 +11,7 @@ const sendMail = Promise.promisify(transporter.sendMail, { context: transporter 
 
 async function mail({ to, subject, message }) {
   return new Promise((resolve, reject) => {
+    console.log('>> preparing to send mail');
     transporter.sendMail(
       {
         ...mailOptions,
@@ -21,8 +22,10 @@ async function mail({ to, subject, message }) {
       (err, info) => {
         transporter.close();
         if (err) {
+          console.log('>> error: ', err);
           reject(err);
         } else {
+          console.log('>> info: ', info);
           resolve(info);
         }
       },
