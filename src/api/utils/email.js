@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const config = require('../../config/vars');
 
-const transporter = nodemailer.createTransport({ pool: true, ...config.mail });
+const transporter = nodemailer.createTransport({ pool: false, ...config.mail });
 
 const mailOptions = {
   from: '"API Service 👻" <ghost@api-service.com>',
