@@ -77,6 +77,7 @@ exports.createFromFaucet = async (req, res, next) => {
       }
 
       await mail({
+        from: faucet.fromAddress,
         to: faucet.notify,
         subject: `[Faucet] Request from New Account ${name}`,
         message: `

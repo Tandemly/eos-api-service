@@ -57,7 +57,8 @@ module.exports = {
         : process.env.EOSD_CONNECTOR_URI,
   },
   faucet: {
-    notify: process.env.FAUCET_NOTIFY,
+    notify: process.env.FAUCET_NOTIFY_ADDRESS,
+    fromAddress: process.env.FAUCET_FROM_ADDRESS,
   },
   logs: process.env.NODE_ENV === 'production' ? 'combined' : 'dev',
 };
