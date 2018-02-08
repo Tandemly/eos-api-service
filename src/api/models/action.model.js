@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-const { omitBy, isNil } = require('lodash');
 const APIError = require('../utils/APIError');
 
 /**
- * EOS Message Schema
+ * EOS Action Schema
  * @private
  */
-const messageSchema = new mongoose.Schema(
+const actionSchema = new mongoose.Schema(
   {
-    message_id: {
+    action_id: {
       type: Number,
     },
     transaction_id: {
@@ -19,7 +18,7 @@ const messageSchema = new mongoose.Schema(
     },
     authorization: [
       {
-        account: String,
+        actor: String,
         permission: String,
       },
     ],
@@ -32,27 +31,27 @@ const messageSchema = new mongoose.Schema(
       minlength: 1,
       maxlength: 13,
     },
-    type: {
+    name: {
       type: String,
     },
     data: mongoose.Schema.Types.Mixed,
   },
   {
     timestamps: true,
-    collection: 'Messages',
+    collection: 'Actions',
   },
 );
 
 /**
  * Methods
  */
-messageSchema.method({
+actionSchema.method({
   transform() {
     const transformed = {};
     // TODO: figure out how we want to handle ABI sub-docs
     const fields = [
       'id',
-      'message_id',
+      'action_id',
       'transaction_id',
       'authorization',
       'handler_account_name',
@@ -69,9 +68,9 @@ messageSchema.method({
   },
 });
 
-messageSchema.statics = {
+actionSchema.statics = {
   /**
-   * Get message by transaction id and message id 
+   * Get action by transaction id and action id
    *
    * @param {String} block_ident - The block_num or block_id of the Block.
    * @returns {Promise<Account, APIError>}
@@ -111,7 +110,7 @@ messageSchema.statics = {
 };
 
 /**
- * @typedef Message
+ * @typedef Action
  */
-const Message = mongoose.model('Message', messageSchema);
-module.exports = Message;
+const Action = mongoose.model('Action', actionSchema);
+module.exports = Action;

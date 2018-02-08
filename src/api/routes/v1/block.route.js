@@ -75,7 +75,7 @@ router
    *              "read_scope": [],
    *              "expiration": "2017-10-19T11:42:57.000Z",
    *              "signatures": [],
-   *              "messages": [
+   *              "actions": [
    *                  "59e88ff0f9a2f33694149fed"
    *              ],
    *              "createdAt": "2017-10-19T11:43:45.002Z"
@@ -94,7 +94,7 @@ router
    *              "read_scope": [],
    *              "expiration": "2017-10-19T11:42:57.000Z",
    *              "signatures": [],
-   *              "messages": [
+   *              "actions": [
    *                  "59e88ff1f9a2f33694149ff0"
    *              ],
    *              "createdAt": "2017-10-19T11:43:45.002Z"
@@ -174,10 +174,10 @@ router
    *      "read_scope": [],
    *      "expiration": "1970-01-01T00:00:00.000Z",
    *      "signatures": [],
-   *      "messages": [
+   *      "actions": [
    *          {
    *              "_id": "59e88fa3f9a2f33694149f57",
-   *              "message_id": 0,
+   *              "action_id": 0,
    *              "transaction_id": "be1757939ffc05bca2f630582406ba5e552e1767d88218cd2c5f8be97d6953ad",
    *              "authorization": [
    *                  {
@@ -209,7 +209,7 @@ router
    * @api {get} v1/blocks/:blockIdent/transactions/:txnId Get Transaction on Block
    * @apiDescription Get Transaction information for a specific block->transaction. Using the specific `block_id` or `block_num`
    * for the identified block and the `transaction_id` for the specific transaction, request that transaction's information,
-   * including messages.
+   * including actions.
    * @apiVersion 1.0.0
    * @apiName GetTransactionInBlock
    * @apiGroup Transaction
@@ -232,10 +232,10 @@ router
    *      "ref_block_prefix": "0",
    *      "expiration": "1970-01-01T00:00:00.000Z",
    *      "createdAt": "2017-10-19T11:42:27.552Z",
-   *      "messages": [
+   *      "actions": [
    *          {
    *              "_id": "59e88fa3f9a2f33694149f54",
-   *              "message_id": 0,
+   *              "action_id": 0,
    *              "transaction_id": "d4fb349d4c3b6d2e0f249a56cafda6d060b8b9dc98ffc498c9f425ccac343a69",
    *              "handler_account_name": "eos",
    *              "type": "newaccount",

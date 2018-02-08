@@ -13,12 +13,10 @@ const defaults = {
   },
 };
 
-// Grab the correct, sorted sceope from the list of messages
+// Grab the correct, sorted sceope from the list of actions
 // intended for a transaction
-const getScope = messages =>
-  uniq(
-    flatMap(messages, msg => [msg.code, ...map(msg.authorization, auth => auth.account)]),
-  ).sort();
+const getScope = actions =>
+  uniq(flatMap(actions, msg => [msg.code, ...map(msg.authorization, auth => auth.account)])).sort();
 
 const request = async (path, options = {}) => {
   const opts = { ...defaults, ...options };
@@ -27,15 +25,15 @@ const request = async (path, options = {}) => {
   return { resp, json };
 };
 
-const postTransaction = async ({ messages, signatures, scope }) => {
+const postTransaction = async ({ actions, signatures, scope }) => {
   const { resp, json } = await request('/v1/chain/get_info');
-  const msgList = Array.isArray(messages) ? messages : [messages];
+  const actionList = Array.isArray(actions) ? actions : [actions];
   const transaction = {
     refBlockNum: json.head_block_num & 0xffff,
     refBlockPrefix: new Buffer(json.head_block_id, 'hex').readUInt32LE(8),
     expiration: formatISO(new Date(`${json.head_block_time}Z`)),
-    scope: scope ? uniq(scope).sort() : getScope(msgList),
-    messages: msgList,
+    scope: scope ? uniq(scope).sort() : getScope(actionList),
+    actions: actionList,
     signatures,
   };
   return request('/v1/chain/push_transaction', {

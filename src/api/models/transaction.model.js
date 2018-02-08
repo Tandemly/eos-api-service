@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-const { keys, compact, isEmpty, omitBy, pickBy, map, mapKeys, isNil } = require('lodash');
+const { compact, isEmpty } = require('lodash');
 const APIError = require('../utils/APIError');
-const Message = require('./message.model');
+const Actions = require('./actions.model');
 
 /**
  * EOS Transaction Schema
@@ -31,12 +31,10 @@ const transactionSchema = new mongoose.Schema(
       unique: true,
     },
     ref_block_prefix: {
-      type: String,
+      type: Number,
       required: true,
       unique: true,
     },
-    scope: [String],
-    read_scope: [String],
     expiration: {
       type: Date,
       required: true,
@@ -48,7 +46,7 @@ const transactionSchema = new mongoose.Schema(
         length: 64,
       },
     ],
-    messages: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
+    actions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Action' }],
   },
   {
     timestamps: true,
@@ -74,7 +72,7 @@ transactionSchema.method({
       'read_scope',
       'expiration',
       'signatures',
-      'messages',
+      'actions',
       'createdAt',
     ];
 
@@ -95,7 +93,7 @@ transactionSchema.statics = {
    */
   async get(txnId) {
     const txn = await this.findOne({ transaction_id: txnId })
-      .populate('messages')
+      .populate('actions')
       .exec();
 
     if (!txn) {
@@ -121,10 +119,10 @@ transactionSchema.statics = {
     const $match = isEmpty(filter) ? null : { $match: filter };
     const $lookup = {
       $lookup: {
-        from: 'Messages',
-        localField: 'messages',
+        from: 'Actions',
+        localField: 'actions',
         foreignField: '_id',
-        as: 'messages',
+        as: 'actions',
       },
     };
     const $project = projection ? { $project: projection } : null;

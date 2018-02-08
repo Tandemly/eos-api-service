@@ -44,10 +44,10 @@ router
    *      "read_scope": [],
    *      "expiration": "1970-01-01T00:00:00.000Z",
    *      "signatures": [],
-   *      "messages": [
+   *      "actions": [
    *          {
    *              "_id": "59e88fa3f9a2f33694149f57",
-   *              "message_id": 0,
+   *              "action_id": 0,
    *              "transaction_id": "be1757939ffc05bca2f630582406ba5e552e1767d88218cd2c5f8be97d6953ad",
    *              "authorization": [
    *                  {
@@ -99,7 +99,7 @@ router
    *          "inita"
    *      ],
    *      "signatures": [],
-   *      "messages": [
+   *      "actions": [
    *          {
    *              "code": "eos",
    *              "type": "newaccount",
@@ -191,10 +191,10 @@ router
    *      "read_scope": [],
    *      "expiration": "1970-01-01T00:00:00.000Z",
    *      "signatures": [],
-   *      "messages": [
+   *      "actions": [
    *          {
    *              "_id": "59e88fa3f9a2f33694149f57",
-   *              "message_id": 0,
+   *              "action_id": 0,
    *              "transaction_id": "be1757939ffc05bca2f630582406ba5e552e1767d88218cd2c5f8be97d6953ad",
    *              "authorization": [
    *                  {

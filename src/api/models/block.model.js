@@ -1,17 +1,6 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-const {
-  zipObject,
-  map,
-  isEmpty,
-  compact,
-  keys,
-  omitBy,
-  pickBy,
-  mapKeys,
-  isNil,
-} = require('lodash');
-const { trimLeft, keyMatches, getAllFieldsProjections } = require('../utils/helpers');
+const { isEmpty, compact } = require('lodash');
 const APIError = require('../utils/APIError');
 
 /**

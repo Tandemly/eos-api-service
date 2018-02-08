@@ -1,8 +1,7 @@
 [
   {
-    "message_id": 0,
-    "transaction_id":
-      "d4fb349d4c3b6d2e0f249a56cafda6d060b8b9dc98ffc498c9f425ccac343a69",
+    "action_id": 0,
+    "transaction_id": "d4fb349d4c3b6d2e0f249a56cafda6d060b8b9dc98ffc498c9f425ccac343a69",
     "authorization": [
       {
         "account": "eos",
@@ -48,9 +47,8 @@
     }
   },
   {
-    "message_id": 1,
-    "transaction_id":
-      "d4fb349d4c3b6d2e0f249a56cafda6d060b8b9dc98ffc498c9f425ccac343a69",
+    "action_id": 1,
+    "transaction_id": "d4fb349d4c3b6d2e0f249a56cafda6d060b8b9dc98ffc498c9f425ccac343a69",
     "authorization": [
       {
         "account": "eos",
@@ -96,9 +94,8 @@
     }
   },
   {
-    "message_id": 2,
-    "transaction_id":
-      "d4fb349d4c3b6d2e0f249a56cafda6d060b8b9dc98ffc498c9f425ccac343a69",
+    "action_id": 2,
+    "transaction_id": "d4fb349d4c3b6d2e0f249a56cafda6d060b8b9dc98ffc498c9f425ccac343a69",
     "authorization": [
       {
         "account": "eos",
@@ -144,9 +141,8 @@
     }
   },
   {
-    "message_id": 0,
-    "transaction_id":
-      "1bd49e058eaf7143aafde4e1885e82a7e5c0af2c13e473344c5bc6c5489f5b26",
+    "action_id": 0,
+    "transaction_id": "1bd49e058eaf7143aafde4e1885e82a7e5c0af2c13e473344c5bc6c5489f5b26",
     "authorization": [
       {
         "account": "inita",

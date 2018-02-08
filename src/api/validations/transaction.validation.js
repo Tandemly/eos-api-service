@@ -1,12 +1,12 @@
 const Joi = require('joi');
 const Transaction = require('../models/transaction.model');
 
-const messageSchema = Joi.object().keys({
+const actionSchema = Joi.object().keys({
   code: Joi.string().required(),
   type: Joi.string().required(),
   authorization: Joi.array().items(
     Joi.object().keys({
-      account: Joi.string(),
+      actor: Joi.string(),
       permission: Joi.string(),
     }),
   ),
@@ -32,7 +32,7 @@ module.exports = {
   // POST /v1/transactions
   createTransaction: {
     body: {
-      messages: Joi.alternatives().try(messageSchema, Joi.array().items(messageSchema)),
+      actions: Joi.alternatives().try(actionSchema, Joi.array().items(actionSchema)),
       signatures: Joi.array().items(Joi.string()),
     },
   },

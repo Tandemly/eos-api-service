@@ -12,13 +12,13 @@ to provide for:
 
 The service relies on the existence of at leaset one node on the EOS network it
 connects to be running the `db_plugin` and `http_plugin`. The `db_plugin` is
-built to sync and stream irreversible blocks (transactions/messages) and account
+built to sync and stream irreversible blocks (transactions/actions) and account
 information to an external mongodb that serves as the data source for this API
 service for all GET requests. This means:
 
 * the API provides snapshot information from the EOS blockchain network it
   services
-* the related block/transaction/message information it serves are only those
+* the related block/transaction/actions information it serves are only those
   added to the chain (irreversible)
 * it doesn't overload the EOS network nodes with requests and can scale based on
   user needs
@@ -46,7 +46,7 @@ The resources provided by the API service are as follows:
 * Blocks `/v1/blocks` - resource representing the most recent snapshot of
   irreversible blocks on the EOS blockchain
 * Transactions `/v1/transactions` - resource representation of the transactions
-  and their messages
+  and their actions
 * Accounts `/v1/accounts` - resources representing accounts on the EOS
   blockchain
 
