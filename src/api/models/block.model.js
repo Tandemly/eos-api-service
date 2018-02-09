@@ -153,53 +153,35 @@ blockSchema.statics = {
    * @returns {Promise<Block[]>}
    */
   list({ skip = 0, limit = 30, sort, filter, projection }) {
-    const $match = isEmpty(filter) ? null : { $match: filter };
-    const $lookup = {
-      $lookup: {
-        from: 'Transactions',
-        localField: 'transactions',
-        foreignField: '_id',
-        as: 'transactions',
-      },
-    };
-    const $unwind = { $unwind: '$transactions' };
-    const $project = projection ? { $project: projection } : null;
-    const $group = {
-      $group: {
-        _id: '$_id',
-        block: { $first: '$$ROOT' },
-        transactions: { $push: '$transactions' },
-      },
-    };
-    const $groupProject = {
-      $project: {
-        _id: '$block._id',
-        block_num: '$block.block_num',
-        block_id: '$block.block_id',
-        prev_block_id: '$block.prev_block_id',
-        timestamp: '$block.timestamp',
-        transaction_merkle_root: '$block.transaction_merkle_root',
-        producer_account_id: '$block.producer_account_id',
-        transactions: 1,
-      },
-    };
-    const $skip = { $skip: skip };
-    const $limit = { $limit: limit };
-    const $sort = sort ? { $sort: sort } : null;
+    const $match = isEmpty(filter) ? {} : filter;
+    const $subSelect = {};
 
-    const agg = compact([
-      $match,
-      $lookup,
-      $unwind,
-      $group,
-      $groupProject,
-      $project,
-      $sort,
-      $skip,
-      $limit,
-    ]);
+    // Pull out 'transactions.*' field projects for
+    // populate select to ensure we *only* return necessary fields
+    // via the populate query
+    if (!isEmpty(projection)) {
+      Object.keys(projection).forEach((field) => {
+        if (/^transactions\./.test(field)) {
+          const key = field.slice('transactions.'.length);
+          $subSelect[key] = projection[field];
+        }
+      });
+    }
 
-    return this.aggregate(agg).exec();
+    return this.find($match)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: 'transactions',
+        options: {
+          lean: true,
+          select: $subSelect,
+        },
+      })
+      .select(projection)
+      .lean()
+      .exec();
   },
 };
 
