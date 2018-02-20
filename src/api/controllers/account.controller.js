@@ -4,8 +4,9 @@ const aqp = require('api-query-params');
 const fetch = require('isomorphic-fetch');
 const { mail } = require('../utils/email');
 const Account = require('../models/account.model');
+const Requests = require('../models/requests.model');
 const { handler: errorHandler } = require('../middlewares/error');
-const { eosd, faucet } = require('../../config/vars');
+const { service_name, eosd, faucet } = require('../../config/vars');
 
 /**
  * Load EOS account and append to req.
@@ -76,12 +77,21 @@ exports.createFromFaucet = async (req, res, next) => {
         });
       }
 
+      // Log this request
+      const request = new Requests({
+        email,
+        eos_account: name,
+        owner_key: keys.owner,
+        active_key: keys.active,
+      });
+      await request.save();
+
       await mail({
         from: faucet.fromAddress,
         to: faucet.notify,
-        subject: `[Faucet] Request from New Account ${name}`,
+        subject: `[Faucet](${service_name}) Request from New Account ${name}`,
         message: `
-          <h3>The account ${name} is interested in tokens</h3>
+          <h3>The new EOS account <tt>${name}</tt> is interested in tokens</h3>
           <p>
             The newly created EOS account (via faucet) has expressed an interest in acquiring test
             tokens for development or other purposes. Here is their information:
@@ -96,6 +106,11 @@ exports.createFromFaucet = async (req, res, next) => {
               </ul>
             </li>
           </ul>
+          <p>
+          Request generated from ${service_name} at the url: ${req.protocol}://${req.get('host')}${
+  req.originalUrl
+}.
+          </p>
         `,
       });
     }
