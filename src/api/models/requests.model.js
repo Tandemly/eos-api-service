@@ -28,6 +28,18 @@ const requestSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    first_name: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+    },
+    last_name: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 1,
+    },
     eos_account: {
       type: String,
       match: /^[.12345a-z]+$/,

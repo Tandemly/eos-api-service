@@ -22,6 +22,12 @@ module.exports = {
       name: Joi.string()
         .min(5)
         .required(),
+      first_name: Joi.string()
+        .min(1)
+        .required(),
+      last_name: Joi.string()
+        .min(1)
+        .required(),
       email: Joi.string()
         .email()
         .required(),

@@ -47,7 +47,7 @@ exports.list = async (req, res, next) => {
 /* eslint-disable camelcase */
 exports.createFromFaucet = async (req, res, next) => {
   try {
-    const { name, email, wants_tokens, keys } = req.body;
+    const { name, email, first_name, last_name, wants_tokens, keys } = req.body;
 
     const resp = await fetch(`${eosd.uri}/v1/faucet/create_account`, {
       method: 'POST',
@@ -81,6 +81,8 @@ exports.createFromFaucet = async (req, res, next) => {
       const request = new Requests({
         email,
         eos_account: name,
+        first_name,
+        last_name,
         owner_key: keys.owner,
         active_key: keys.active,
       });
@@ -89,7 +91,7 @@ exports.createFromFaucet = async (req, res, next) => {
       await mail({
         from: faucet.fromAddress,
         to: faucet.notify,
-        subject: `[Faucet](${service_name}) Request from New Account ${name}`,
+        subject: `[Faucet](${service_name}) Request from New Account ${first_name} ${last_name} (${name})`,
         message: `
           <h3>The new EOS account <tt>${name}</tt> is interested in tokens</h3>
           <p>
@@ -98,6 +100,7 @@ exports.createFromFaucet = async (req, res, next) => {
           </p>
           <ul>
             <li> <b>account:</b> ${name}</li>
+            <li> <b>name:</b> ${first_name} ${last_name}</li>
             <li> <b>email:</b> <a href="mailto:${email}">${email}</a></li>
             <li> <b>Public Keys</b>:
               <ul>
