@@ -108,7 +108,7 @@ blockSchema.statics = {
    */
   async get(block_ident, { projection = {} } = {}) {
     const isId = isNaN(Number(block_ident));
-    const filter = isId ? { block_id: block_ident } : { block_num: block_ident };
+    const filter = isId ? { block_id: block_ident } : { block_num: Number(block_ident) };
 
     const $match = {
       $match: filter,
