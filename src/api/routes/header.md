@@ -5,13 +5,13 @@ applications to use for communicating with an existing EOS blockchain network.
 It's built as a standalone service, as opposed to directly implemented in EOS,
 to provide for:
 
-* cleaner separate of concerns,
+* cleaner separation of concerns,
 * help lessen the processing load and memory footprint of EOS
 * provide a standard API service that third-party developers can utilize with
   their existing toolchain, libraries and frameworks.
 
-The service relies on the existence of at leaset one node on the EOS network it
-connects to be running the `db_plugin` and `http_plugin`. The `db_plugin` is
+The service relies on the existence of at least one node on the EOS network it
+connects to to be running the `db_plugin` and `http_plugin`. The `db_plugin` is
 built to sync and stream irreversible blocks (transactions/messages) and account
 information to an external mongodb that serves as the data source for this API
 service for all GET requests. This means:
@@ -25,12 +25,12 @@ service for all GET requests. This means:
 
 This documentation is organized around the available `resources` provided by the
 API service. These are standard REST resources and provide typical endpoints for
-getting a collection of resoures or a single resource. The API also provides the
+getting a collection of resources or a single resource. The API also provides the
 following abilities, which can be found in the last section of this guide:
 
-* limiting/selecting the specific fields to return for a resources
+* limiting/selecting the specific fields to return for a resource
 * filtering of collection resources
-* paging of collection resources, and
+* pagination of collection resources, and
 * sorting of collection resources
 
 The resources provided by the API service are as follows:
