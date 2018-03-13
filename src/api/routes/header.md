@@ -39,16 +39,14 @@ The resources provided by the API service are as follows:
 
 * Auth `/v1/auth` - set of services for registering and managing API service
   users and their access tokens
-* User `/v1/users` - resources representing API service users
+* User `/v1/users` - API service users
 
 ### EOS Specific
 
-* Blocks `/v1/blocks` - resource representing the most recent snapshot of
-  irreversible blocks on the EOS blockchain
-* Transactions `/v1/transactions` - resource representation of the transactions
-  and their messages
-* Accounts `/v1/accounts` - resources representing accounts on the EOS
-  blockchain
+* Blocks `/v1/blocks` - the most recent snapshot of irreversible blocks on the
+  EOS blockchain
+* Transactions `/v1/transactions` - transactions and their messages
+* Accounts `/v1/accounts` - accounts on the EOS blockchain
 
 ## Authentication
 
@@ -58,7 +56,7 @@ request must have a valid authorization token. Our authorization tokens use JWT
 or refresh-token API endpoints.
 
 To make a valid API call, you can take a received token from one of the
-previously mentioned calls and pass it as the `Authorization` header on your
+previously mentioned endpoints and pass it as the `Authorization` header on your
 HTTP(s) requests. This is a `Bearer` type token and can be passed as follows in
 the HTTP headers:
 
