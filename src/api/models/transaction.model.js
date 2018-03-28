@@ -117,7 +117,7 @@ transactionSchema.statics = {
    * @param {Object|String} [projection] - MongoDB $projection object denoting fields to include/exclude
    * @returns {Promise<Transaction[]>}
    */
-  list({ skip = 0, limit = 30, sort, filter, projection }) {
+  list({ skip = 0, limit = 30, sort = { createdAt: -1 }, filter, projection }) {
     const $match = isEmpty(filter) ? null : { $match: filter };
     const $lookup = {
       $lookup: {
