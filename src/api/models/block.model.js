@@ -152,7 +152,7 @@ blockSchema.statics = {
    * @param {Object|String} [projection] - Mongoose `select()` arg denoting fields to include or exclude
    * @returns {Promise<Block[]>}
    */
-  list({ skip = 0, limit = 30, sort, filter, projection }) {
+  list({ skip = 0, limit = 30, sort = { timestamp: -1 }, filter, projection }) {
     const $match = isEmpty(filter) ? {} : filter;
     const $subSelect = {};
 
