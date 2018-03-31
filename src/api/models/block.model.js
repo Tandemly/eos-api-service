@@ -143,7 +143,7 @@ blockSchema.statics = {
   },
 
   /**
-   * List Blocks in descending order of 'createdAt' timestamp.
+   * List Blocks in descending order of their block number (block_num).
    *
    * @param {number} skip - Number of entities to be skipped.
    * @param {number} limit - Limit number of entities to be returned.
@@ -152,7 +152,7 @@ blockSchema.statics = {
    * @param {Object|String} [projection] - Mongoose `select()` arg denoting fields to include or exclude
    * @returns {Promise<Block[]>}
    */
-  list({ skip = 0, limit = 30, sort = { timestamp: -1 }, filter, projection }) {
+  list({ skip = 0, limit = 30, sort = { block_num: -1 }, filter, projection }) {
     const $match = isEmpty(filter) ? {} : filter;
     const $subSelect = {};
 
