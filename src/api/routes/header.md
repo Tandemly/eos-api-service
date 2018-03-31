@@ -5,13 +5,13 @@ applications to use for communicating with an existing EOS blockchain network.
 It's built as a standalone service, as opposed to directly implemented in EOS,
 to provide for:
 
-* cleaner separate of concerns,
+* cleaner separation of concerns,
 * help lessen the processing load and memory footprint of EOS
 * provide a standard API service that third-party developers can utilize with
   their existing toolchain, libraries and frameworks.
 
-The service relies on the existence of at leaset one node on the EOS network it
-connects to be running the `db_plugin` and `http_plugin`. The `db_plugin` is
+The service relies on the existence of at least one node on the EOS network it
+connects to to be running the `db_plugin` and `http_plugin`. The `db_plugin` is
 built to sync and stream irreversible blocks (transactions/messages) and account
 information to an external mongodb that serves as the data source for this API
 service for all GET requests. This means:
@@ -25,12 +25,12 @@ service for all GET requests. This means:
 
 This documentation is organized around the available `resources` provided by the
 API service. These are standard REST resources and provide typical endpoints for
-getting a collection of resoures or a single resource. The API also provides the
+getting a collection of resources or a single resource. The API also provides the
 following abilities, which can be found in the last section of this guide:
 
-* limiting/selecting the specific fields to return for a resources
+* limiting/selecting the specific fields to return for a resource
 * filtering of collection resources
-* paging of collection resources, and
+* pagination of collection resources, and
 * sorting of collection resources
 
 The resources provided by the API service are as follows:
@@ -39,16 +39,14 @@ The resources provided by the API service are as follows:
 
 * Auth `/v1/auth` - set of services for registering and managing API service
   users and their access tokens
-* User `/v1/users` - resources representing API service users
+* User `/v1/users` - API service users
 
 ### EOS Specific
 
-* Blocks `/v1/blocks` - resource representing the most recent snapshot of
-  irreversible blocks on the EOS blockchain
-* Transactions `/v1/transactions` - resource representation of the transactions
-  and their messages
-* Accounts `/v1/accounts` - resources representing accounts on the EOS
-  blockchain
+* Blocks `/v1/blocks` - the most recent snapshot of irreversible blocks on the
+  EOS blockchain
+* Transactions `/v1/transactions` - transactions and their messages
+* Accounts `/v1/accounts` - accounts on the EOS blockchain
 
 ## Authentication
 
@@ -58,7 +56,7 @@ request must have a valid authorization token. Our authorization tokens use JWT
 or refresh-token API endpoints.
 
 To make a valid API call, you can take a received token from one of the
-previously mentioned calls and pass it as the `Authorization` header on your
+previously mentioned endpoints and pass it as the `Authorization` header on your
 HTTP(s) requests. This is a `Bearer` type token and can be passed as follows in
 the HTTP headers:
 
