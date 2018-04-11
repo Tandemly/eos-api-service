@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
-const { compact, isEmpty } = require('lodash');
+const { isEmpty } = require('lodash');
 const APIError = require('../utils/APIError');
-const Actions = require('./actions.model');
+const Actions = require('./action.model');
 
 /**
  * EOS Transaction Schema
@@ -46,13 +46,22 @@ const transactionSchema = new mongoose.Schema(
         length: 64,
       },
     ],
-    actions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Action' }],
+    // actions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Action' }],
   },
   {
     timestamps: true,
     collection: 'Transactions',
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   },
 );
+
+// Virtually populate actions for transactions
+transactionSchema.virtual('actions', {
+  ref: 'Action',
+  localField: 'transaction_id',
+  foreignField: 'transaction_id',
+});
 
 /**
  * Methods
@@ -70,9 +79,9 @@ transactionSchema.method({
       'ref_block_prefix',
       'scope',
       'read_scope',
+      'actions',
       'expiration',
       'signatures',
-      'actions',
       'createdAt',
     ];
 
@@ -92,11 +101,22 @@ transactionSchema.statics = {
    * @returns {Promise<Transaction, APIError>}
    */
   async get(txnId) {
+    // console.log(`getting ${txnId}`);
     const txn = await this.findOne({ transaction_id: txnId })
-      .populate('actions')
-      .exec();
+      .populate('actions') // , { options: { lean: true } })
+      .exec((err, data) => {
+        if (err) {
+          console.error('ERROR:', err);
+          throw new APIError({
+            status: httpStatus.INTERNAL_SERVER_ERROR,
+            message: `DB Error. Unable to join actions to transaction for txn id ${txnId}`,
+          });
+        }
+        return data;
+      });
 
     if (!txn) {
+      // console.log(txn);
       throw new APIError({
         status: httpStatus.NOT_FOUND,
         message: 'EOS transaction id not found or invalid',
@@ -116,23 +136,56 @@ transactionSchema.statics = {
    * @returns {Promise<Transaction[]>}
    */
   list({ skip = 0, limit = 30, sort = { createdAt: -1 }, filter, projection }) {
-    const $match = isEmpty(filter) ? null : { $match: filter };
-    const $lookup = {
-      $lookup: {
-        from: 'Actions',
-        localField: 'actions',
-        foreignField: '_id',
-        as: 'actions',
-      },
-    };
-    const $project = projection ? { $project: projection } : null;
-    const $skip = { $skip: skip };
-    const $limit = { $limit: limit };
-    const $sort = sort ? { $sort: sort } : null;
+    // const $match = isEmpty(filter) ? null : { $match: filter };
+    // const $lookup = {
+    //   $lookup: {
+    //     from: 'Actions',
+    //     localField: 'actions',
+    //     foreignField: '_id',
+    //     as: 'actions',
+    //   },
+    // };
+    // const $project = projection ? { $project: projection } : null;
+    // const $skip = { $skip: skip };
+    // const $limit = { $limit: limit };
+    // const $sort = sort ? { $sort: sort } : null;
 
-    const agg = compact([$match, $lookup, $project, $sort, $skip, $limit]);
+    // const agg = compact([$match, $lookup, $project, $sort, $skip, $limit]);
 
-    return this.aggregate(agg).exec();
+    // return this.aggregate(agg).exec();
+
+    const $match = isEmpty(filter) ? {} : filter;
+    const $subSelect = {};
+
+    // Pull out 'actions.*' field projects for
+    // populate select to ensure we *only* return necessary fields
+    // via the populate query
+    if (!isEmpty(projection)) {
+      Object.keys(projection).forEach((field) => {
+        if (/^actions\./.test(field)) {
+          const key = field.slice('actions.'.length);
+          $subSelect[key] = projection[field];
+        }
+      });
+    }
+
+    return (
+      this.find($match)
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .populate('actions')
+        // {
+        //   path: 'actions',
+        //   options: {
+        //     lean: true,
+        //     // ...(!isEmpty($subSelect) && { select: $subSelect }),
+        //   },
+        // })
+        .select(projection)
+        .lean()
+        .exec()
+    );
   },
 };
 
