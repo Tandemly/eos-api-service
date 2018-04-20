@@ -1,73 +1,55 @@
 const mongoose = require('mongoose');
 const httpStatus = require('http-status');
 const APIError = require('../utils/APIError');
-const ActionTrace = require('./actionTrace.model');
+require('./action.model');
 
 /**
- * EOS Action Schema
+ * EOS ActionTrace Schema
  * @private
  */
-const actionSchema = new mongoose.Schema(
+const actionTraceSchema = new mongoose.Schema(
   {
-    action_id: {
-      type: Number,
-    },
     transaction_id: {
       type: String,
       required: true,
       length: 64,
     },
-    authorization: [
+    receiver: String,
+    action: { type: mongoose.Schema.Types.ObjectId, ref: 'Action' },
+    console: String,
+    region_id: Number,
+    cycle_index: Number,
+    data_access: [
       {
-        account: String,
-        permission: String,
+        type: String,
+        code: String,
+        scope: String,
+        sequence: Number,
       },
     ],
-    handler_account_name: {
-      type: String,
-      match: /^[.12345a-z]+$/,
-      required: true,
-      trim: true,
-      lowercase: true,
-      minlength: 1,
-      maxlength: 13,
-    },
-    type: {
-      type: String,
-    },
-    data: mongoose.Schema.Types.Mixed,
   },
   {
     timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-    collection: 'Actions',
+    collection: 'ActionTraces',
   },
 );
-
-actionSchema.virtual('action_trace', {
-  ref: 'ActionTrace',
-  localField: '_id',
-  foreignField: 'action',
-  justOne: true,
-});
 
 /**
  * Methods
  */
-actionSchema.method({
+actionTraceSchema.method({
   transform() {
     const transformed = {};
     // TODO: figure out how we want to handle ABI sub-docs
     const fields = [
       'id',
-      'action_id',
       'transaction_id',
-      'authorization',
-      'handler_account_name',
-      'type',
-      'data',
-      'action_trace',
+      'action',
+      'receiver',
+      'region_id',
+      'console',
+      'cycle_index',
+      'data_access',
       'createdAt',
     ];
 
@@ -79,7 +61,7 @@ actionSchema.method({
   },
 });
 
-actionSchema.statics = {
+actionTraceSchema.statics = {
   /**
    * Get action by transaction id and action id
    *
@@ -116,13 +98,12 @@ actionSchema.statics = {
       .sort(sort || { createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('action_trace')
       .exec();
   },
 };
 
 /**
- * @typedef Action
+ * @typedef ActionTrace
  */
-const Action = mongoose.model('Action', actionSchema);
-module.exports = Action;
+const ActionTrace = mongoose.model('ActionTrace', actionTraceSchema);
+module.exports = ActionTrace;

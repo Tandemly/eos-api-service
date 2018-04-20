@@ -35,6 +35,24 @@ const transactionSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    type: {
+      type: String,
+    },
+    status: {
+      type: String,
+    },
+    pending: {
+      type: Boolean,
+    },
+    sender_id: {
+      type: Number,
+    },
+    sender: {
+      type: String,
+    },
+    execute_after: {
+      type: Date,
+    },
     expiration: {
       type: Date,
       required: true,
@@ -77,11 +95,14 @@ transactionSchema.method({
       'block_id',
       'ref_block_num',
       'ref_block_prefix',
-      'scope',
-      'read_scope',
+      'type',
+      'status',
       'actions',
       'expiration',
       'signatures',
+      'sender_id',
+      'sender',
+      'execute_after',
       'createdAt',
     ];
 
@@ -103,7 +124,10 @@ transactionSchema.statics = {
   async get(txnId) {
     // console.log(`getting ${txnId}`);
     const txn = await this.findOne({ transaction_id: txnId })
-      .populate('actions') // , { options: { lean: true } })
+      .populate({
+        path: 'actions',
+        populate: { path: 'action_trace' },
+      }) // , { options: { lean: true } })
       .exec((err, data) => {
         if (err) {
           console.error('ERROR:', err);

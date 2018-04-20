@@ -44,6 +44,9 @@ const blockSchema = new mongoose.Schema(
       maxlength: 13,
     },
     transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Transactions' }],
+    pending: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,
@@ -75,6 +78,7 @@ blockSchema.method({
       'transaction_merkle_root',
       'producer_account_id',
       'transactions',
+      'pending',
       'createdAt',
     ];
 
