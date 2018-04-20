@@ -193,23 +193,17 @@ transactionSchema.statics = {
       });
     }
 
-    return (
-      this.find($match)
-        .sort(sort)
-        .skip(skip)
-        .limit(limit)
-        .populate('actions')
-        // {
-        //   path: 'actions',
-        //   options: {
-        //     lean: true,
-        //     // ...(!isEmpty($subSelect) && { select: $subSelect }),
-        //   },
-        // })
-        .select(projection)
-        .lean()
-        .exec()
-    );
+    return this.find($match)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .populate({
+        path: 'actions',
+        populate: { path: 'action_trace' },
+      })
+      .select(projection)
+      .lean()
+      .exec();
   },
 };
 
