@@ -9,7 +9,7 @@ const APIError = require('../utils/APIError');
  */
 const accountSchema = new mongoose.Schema(
   {
-    name: {
+    account_name: {
       type: String,
       match: /^[.12345a-z]+$/,
       required: true,
@@ -35,6 +35,11 @@ const accountSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    last_unstaking_time: {
+      type: String,
+      required: true,
+      trim: true,
+    }
   },
   {
     timestamps: true,
@@ -51,10 +56,11 @@ accountSchema.method({
     // TODO: figure out how we want to handle ABI sub-docs
     const fields = [
       'id',
-      'name',
+      'account_name',
       'eos_balance',
       'staked_balance',
       'unstaking_balance',
+      'last_unstaking_time',
       'abi',
       'createdAt',
     ];
@@ -75,13 +81,13 @@ accountSchema.method({
 
 accountSchema.statics = {
   /**
-   * Get account by name
+   * Get account by account_name
    *
-   * @param {String} name - The name of the EOS account.
+   * @param {String} account_name - The name of the EOS account.
    * @returns {Promise<Account, APIError>}
    */
-  async get(name, { projection = {} }) {
-    let account = this.findOne({ name });
+  async get(account_name, { projection = {} }) {
+    let account = this.findOne({ account_name });
 
     if (!isEmpty(projection)) {
       account = account.select(projection);

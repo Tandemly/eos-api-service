@@ -3,6 +3,7 @@ const userRoutes = require('./user.route');
 const authRoutes = require('./auth.route');
 const accountRoutes = require('./account.route');
 const blockRoutes = require('./block.route');
+const chainRoutes = require('./chain.route');
 const transactionRoutes = require('./transaction.route');
 
 const router = express.Router();
@@ -25,6 +26,7 @@ router.use('/auth', authRoutes);
  */
 router.use('/accounts', accountRoutes);
 router.use('/blocks', blockRoutes);
+router.use('/chain', chainRoutes);
 router.use('/transactions', transactionRoutes);
 
 module.exports = router;
