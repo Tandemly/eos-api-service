@@ -105,6 +105,42 @@ router
   .get(authorize(), validate(listBlocks), controller.list);
 
 router
+  .route('/head')
+  /**
+   * @api {get} v1/blocks/head Get Head Block Info
+   * @apiDescription Get Block information for a Head block from Blockchain.
+   * This api in turns calls EOSD endpoint: http://eosnet.url/v1/chain/get_info
+   * @apiVersion 1.0.0
+   * @apiName GetHeadBlock
+   * @apiGroup Block
+   * @apiPermission user
+   * @apiExample {curl} Example usage:
+   *  curl -i http://localhost:3000/v1/blocks/head
+   *
+   * @apiHeader {String} Athorization  User's access token
+   *
+   * @apiUse FieldParam
+   *
+   * @apiUse BlockModel
+   *
+   * @apiError (Unauthorized 401) Unauthorized Only authenticated users can access the data
+   * @apiError (Not Found 500)    Error     Error calling Blockchain eosd url
+   *
+   * @apiSuccessExample {json} Success Example:
+   * {
+   * "server_version": "bcb5bf75",
+   * "head_block_num": 4414121,
+   * "last_irreversible_block_num": 4414103,
+   * "head_block_id": "00435aa96628222a35eafa12c740359c4334fd6a958b3455d4752544e1380694",
+   * "head_block_time": "2018-03-19T17:27:22",
+   * "head_block_producer": "inits",
+   * "recent_slots": "1111111111111111111111111111111111111111111111111111111111111111",
+   * "participation_rate": "1.00000000000000000"
+   * }
+   */
+  .get(authorize(), controller.head);
+
+router
   .route('/:blockIdent')
   /**
    * @api {get} v1/blocks/:ident Get Block
